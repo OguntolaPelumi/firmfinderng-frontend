@@ -1,5 +1,5 @@
 <template>
-  <NuxtLayout name="dashboard" title="Overview" subtitle="Your NigeriaData dashboard">
+  <NuxtLayout name="dashboard" title="Overview" subtitle="Your FirmFinderNG dashboard">
     <div class="dash">
 
       <!-- Loading skeleton -->

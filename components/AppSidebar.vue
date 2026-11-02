@@ -21,11 +21,11 @@
 
       <!-- Logo -->
       <div class="sidebar-logo">
-        <NuxtLink to="/dashboard" class="sidebar-logo-link" aria-label="NigeriaData dashboard">
+        <NuxtLink to="/dashboard" class="sidebar-logo-link" aria-label="FirmFinderNG dashboard">
           <div class="sidebar-logo-mark">
             <Icon name="ph:database-fill" style="font-size:1rem;color:white" />
           </div>
-          <span class="sidebar-logo-text">Nigeria<span class="sidebar-logo-accent">Data</span></span>
+          <span class="sidebar-logo-text">FirmFinder<span class="sidebar-logo-accent">NG</span></span>
         </NuxtLink>
         <button type="button" class="sidebar-close" aria-label="Close menu" @click="open = false">
           <Icon name="ph:x-bold" style="font-size:1.1rem" />

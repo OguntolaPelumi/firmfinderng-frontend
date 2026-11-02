@@ -10,7 +10,7 @@ export default defineNuxtConfig({
   },
   app: {
     head: {
-      title: 'NigeriaData — Nigerian Business Intelligence Platform',
+      title: 'FirmFinderNG — Nigerian Business Intelligence Platform',
       meta: [
         { name: 'description', content: 'Access verified Nigerian business data, B2B leads, competitor intelligence and market reports.' },
       ],

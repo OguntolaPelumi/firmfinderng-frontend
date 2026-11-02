@@ -8,7 +8,7 @@
           <div class="nav-logo-mark">
             <Icon name="ph:database-fill" style="font-size:0.875rem;color:white" />
           </div>
-          <span class="nav-logo-text">Nigeria<span class="nav-logo-accent">Data</span></span>
+          <span class="nav-logo-text">FirmFinder<span class="nav-logo-accent">NG</span></span>
         </div>
 
         <button
@@ -119,7 +119,7 @@
     <section class="cta-section">
       <div class="cta-inner">
         <h2 class="cta-title">Ready to find your next Nigerian client?</h2>
-        <p class="cta-sub">Join businesses already using NigeriaData to grow smarter.</p>
+        <p class="cta-sub">Join businesses already using FirmFinderNG to grow smarter.</p>
         <NuxtLink to="/register" class="btn btn-primary btn-lg cta-btn">
           Get Started Free Today
         </NuxtLink>
@@ -134,7 +134,7 @@
             <Icon name="ph:database-fill" style="font-size:0.75rem;color:white" />
           </div>
           <span style="font-weight:700;color:var(--gray-700)">
-            Nigeria<span style="color:var(--primary)">Data</span>
+            FirmFinder<span style="color:var(--primary)">NG</span>
           </span>
           <span class="footer-credit">by NewHeaven IT Solutions</span>
         </div>

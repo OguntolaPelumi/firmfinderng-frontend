@@ -4,11 +4,11 @@
     <!-- Brand panel -->
     <aside class="auth-left">
       <div class="auth-left-content">
-        <NuxtLink to="/" class="auth-brand" aria-label="NigeriaData home">
+        <NuxtLink to="/" class="auth-brand" aria-label="FirmFinderNG home">
           <div class="auth-brand-mark">
             <Icon name="ph:database-fill" style="font-size:1.25rem;color:white" />
           </div>
-          <span class="auth-brand-name">Nigeria<span>Data</span></span>
+          <span class="auth-brand-name">FirmFinder<span>NG</span></span>
         </NuxtLink>
 
         <h2 class="auth-left-title">Access verified Nigerian business intelligence</h2>
