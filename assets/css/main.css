@@ -42,6 +42,7 @@
   --text-secondary: #4b5563;
   --text-muted: #9ca3af;
   --text-inverse: #ffffff;
+  --text-accent: #111827;
 
   /* Font */
   --font: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
