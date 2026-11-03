@@ -154,7 +154,7 @@ onMounted(loadReports)
 .r-btn { display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; height: 44px; padding: 0 1.1rem; font: inherit; font-size: 0.9rem; font-weight: 600; border-radius: var(--radius-md); border: 1px solid transparent; cursor: pointer; text-decoration: none; white-space: nowrap; transition: background 0.15s; }
 .r-btn-primary { background: var(--primary); color: white; }
 .r-btn-primary:hover { background: var(--primary-dark); }
-.r-btn-outline { background: white; color: var(--primary); border-color: var(--primary); }
+.r-btn-outline { background: var(--cream); color: var(--primary); border-color: var(--primary); }
 .r-btn-outline:hover { background: var(--primary-light); }
 .r-btn-sm { height: 36px; padding: 0 0.9rem; font-size: 0.82rem; }
 .r-btn:focus-visible { outline: 2px solid var(--primary-dark); outline-offset: 2px; }
@@ -166,7 +166,7 @@ onMounted(loadReports)
 
 /* Industry chips */
 .chips { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1.25rem; }
-.chip { display: inline-flex; align-items: center; gap: 0.4rem; height: 36px; padding: 0 0.95rem; font: inherit; font-size: 0.82rem; font-weight: 600; text-transform: capitalize; color: var(--gray-700); background: white; border: 1px solid var(--border); border-radius: 999px; cursor: pointer; transition: background 0.15s, border-color 0.15s, color 0.15s; }
+.chip { display: inline-flex; align-items: center; gap: 0.4rem; height: 36px; padding: 0 0.95rem; font: inherit; font-size: 0.82rem; font-weight: 600; text-transform: capitalize; color: var(--gray-700); background: var(--cream); border: 1px solid var(--border); border-radius: 999px; cursor: pointer; transition: background 0.15s, border-color 0.15s, color 0.15s; }
 .chip:hover { border-color: var(--primary-border); background: var(--primary-light); }
 .chip-active, .chip-active:hover { background: var(--primary); border-color: var(--primary); color: white; }
 .chip-count { font-size: 0.72rem; font-weight: 700; padding: 1px 7px; border-radius: 999px; background: rgba(255,255,255,0.25); }
@@ -174,7 +174,7 @@ onMounted(loadReports)
 
 /* Grid + cards */
 .reports-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(320px, 100%), 1fr)); gap: 1.25rem; }
-.report-card { background: white; border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1.5rem; box-shadow: var(--shadow-sm); transition: box-shadow 0.15s, border-color 0.15s; display: flex; flex-direction: column; min-width: 0; }
+.report-card { background: var(--cream); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1.5rem; box-shadow: var(--shadow-sm); transition: box-shadow 0.15s, border-color 0.15s; display: flex; flex-direction: column; min-width: 0; }
 .report-card:hover { box-shadow: var(--shadow-md); border-color: var(--primary-border); }
 .report-card-header { display: flex; justify-content: space-between; align-items: center; gap: 0.75rem; margin-bottom: 0.875rem; }
 .report-industry { background: var(--primary-light); color: var(--primary-dark); padding: 3px 11px; border-radius: 999px; font-size: 0.72rem; font-weight: 700; text-transform: capitalize; }
@@ -183,7 +183,7 @@ onMounted(loadReports)
 .report-summary { font-size: 0.875rem; color: var(--text-secondary); line-height: 1.6; margin-bottom: 1.25rem; flex: 1; }
 
 /* Insights */
-.report-insights { background: #f4faf7; border: 1px solid var(--primary-border); border-radius: var(--radius-md); padding: 1rem; }
+.report-insights { background: var(--sand); border: 1px solid var(--primary-border); border-radius: var(--radius-md); padding: 1rem; }
 .insights-heading { font-size: 0.8rem; font-weight: 700; color: var(--primary-dark); margin-bottom: 0.625rem; }
 .insights-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 0.55rem; }
 .insights-list li { display: flex; align-items: flex-start; gap: 0.5rem; font-size: 0.85rem; line-height: 1.5; color: var(--gray-700); }
@@ -192,14 +192,14 @@ onMounted(loadReports)
 .link-btn:hover { text-decoration: underline; }
 
 /* Locked state */
-.report-locked { display: flex; align-items: center; gap: 0.75rem; padding: 0.875rem; border: 1px dashed var(--primary-border); border-radius: var(--radius-md); background: white; }
+.report-locked { display: flex; align-items: center; gap: 0.75rem; padding: 0.875rem; border: 1px dashed var(--primary-border); border-radius: var(--radius-md); background: var(--cream); }
 .locked-icon { width: 36px; height: 36px; border-radius: 50%; background: var(--primary-light); color: var(--primary); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
 .locked-text { flex: 1; min-width: 0; }
 .locked-title { font-size: 0.85rem; font-weight: 700; color: var(--gray-900); }
 .locked-sub { font-size: 0.78rem; color: var(--text-muted); }
 
 /* States */
-.state-card { background: white; border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 3.5rem 1.5rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 0.4rem; box-shadow: var(--shadow-sm); }
+.state-card { background: var(--cream); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 3.5rem 1.5rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 0.4rem; box-shadow: var(--shadow-sm); }
 .state-icon { width: 56px; height: 56px; border-radius: 50%; background: var(--primary-light); color: var(--primary); display: flex; align-items: center; justify-content: center; margin-bottom: 0.5rem; }
 .state-icon-error { background: #fdf2f2; color: #b91c1c; }
 .state-title { font-weight: 700; color: var(--gray-900); }
@@ -207,7 +207,7 @@ onMounted(loadReports)
 .no-match { text-align: center; color: var(--text-muted); font-size: 0.9rem; padding: 2rem 0; }
 
 /* Skeleton */
-.sk { background: linear-gradient(90deg, var(--primary-light) 25%, #f4faf7 50%, var(--primary-light) 75%); background-size: 200% 100%; animation: shimmer 1.4s ease-in-out infinite; border-radius: var(--radius-lg); }
+.sk { background: linear-gradient(90deg, #F3EBC0 25%, var(--cream) 50%, #F3EBC0 75%); background-size: 200% 100%; animation: shimmer 1.4s ease-in-out infinite; border-radius: var(--radius-lg); }
 @keyframes shimmer { from { background-position: 200% 0; } to { background-position: -200% 0; } }
 .sk-card { height: 300px; }
 

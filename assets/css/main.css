@@ -2,9 +2,10 @@
 :root {
   /* Primary */
   --primary: #008751;
-  --primary-hover:  #008751;
-  --primary-light: #057a55;
-  --primary-border: ;
+  --primary-dark: #006b41;
+  --primary-hover: #006b41;
+  --primary-light: #e8f5ee;
+  --primary-border: #b7dfc9;
 
   /* Neutrals */
   --gray-50: #f9fafb;
@@ -29,18 +30,29 @@
   --info-bg: #ebf5ff;
 
   /* Surface */
-  --bg: #d3ebdd;
+  /* Warm sand page background with cream surfaces, matching the landing page */
+  --sand: #e8e2c2;
+  --cream: #FBF6DA;
+  --bg: var(--sand);
   --bg-subtle: #f4faf7;
-  /* Light green faded page background, complements the Nigeria green */
-  --bg-fade: linear-gradient(180deg, #dcf0e4 0%, #c2e3cf 100%);
+  --bg-fade: none;
   --surface: #ffffff;
   --border: #e5e7eb;
   --border-strong: #d1d5db;
+  /* Form fields: warm cream instead of stark white so they sit on the cream cards */
+  --input-bg: #fffcea;
+  --input-border: #d9d0a8;
+  --input-border-hover: #b3a97a;
+  --input-disabled-bg: #efe9cc;
+  --placeholder: #7a7458; /* ~4.6:1 on --input-bg */
+  /* Subtle fills (table headers, row hover, neutral badges) tuned to the sand palette */
+  --fill-subtle: #f3edcf;
+  --fill-muted: #ebe4c4;
 
   /* Text */
   --text: #111827;
   --text-secondary: #4b5563;
-  --text-muted: #9ca3af;
+  --text-muted: #6f6a52; /* warm gray, readable on cream and sand (~4.8:1) */
   --text-inverse: #ffffff;
   --text-accent: #111827;
 
@@ -66,7 +78,7 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
 body { font-family: var(--font); color: var(--text); background-color: var(--bg); background-image: var(--bg-fade); background-attachment: fixed; line-height: 1.5; min-height: 100vh; }
-::selection { background: #bfdbfe; color: var(--primary-hover); }
+::selection { background: #c2e3cf; color: var(--primary-hover); }
 
 /* ── Dashboard Layout ── */
 .dashboard-layout { display: flex; min-height: 100vh; background-color: var(--bg); background-image: var(--bg-fade); background-attachment: fixed; }
@@ -77,7 +89,7 @@ body { font-family: var(--font); color: var(--text); background-color: var(--bg)
 
 /* Stat card */
 .stat-card {
-  background: var(--surface);
+  background: var(--cream);
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
   padding: 1.25rem 1.5rem;
@@ -92,12 +104,12 @@ body { font-family: var(--font); color: var(--text); background-color: var(--bg)
 /* Table */
 .data-table { width: 100%; border-collapse: collapse; font-size: 0.875rem; }
 .data-table th {
-  background: var(--gray-50);
+  background: var(--fill-subtle);
   padding: 0.75rem 1rem;
   text-align: left;
   font-size: 0.75rem;
   font-weight: 600;
-  color: var(--gray-500);
+  color: var(--text-secondary);
   letter-spacing: 0.04em;
   text-transform: uppercase;
   border-bottom: 1px solid var(--border);
@@ -105,11 +117,11 @@ body { font-family: var(--font); color: var(--text); background-color: var(--bg)
 }
 .data-table td {
   padding: 0.875rem 1rem;
-  border-bottom: 1px solid var(--gray-100);
+  border-bottom: 1px solid var(--fill-muted);
   color: var(--text);
   vertical-align: middle;
 }
-.data-table tbody tr:hover td { background: var(--gray-50); }
+.data-table tbody tr:hover td { background: var(--fill-subtle); }
 .data-table tbody tr:last-child td { border-bottom: none; }
 
 /* Badges */
@@ -119,7 +131,7 @@ body { font-family: var(--font); color: var(--text); background-color: var(--bg)
   font-size: 0.7rem; font-weight: 600;
   letter-spacing: 0.02em;
 }
-.badge-free { background: var(--gray-100); color: var(--gray-600); }
+.badge-free { background: var(--fill-muted); color: var(--gray-700); }
 .badge-basic { background: var(--info-bg); color: var(--info); }
 .badge-pro { background: var(--success-bg); color: var(--success); }
 .badge-enterprise { background: var(--warning-bg); color: var(--warning); }
@@ -134,7 +146,7 @@ body { font-family: var(--font); color: var(--text); background-color: var(--bg)
   transition: all 0.15s; white-space: nowrap;
 }
 .btn-primary { background: var(--primary); color: white; }
-.btn-primary:hover { background: var(--primary-hover); box-shadow: 0 1px 3px rgba(26,86,219,0.3); }
+.btn-primary:hover { background: var(--primary-hover); box-shadow: 0 6px 16px -6px rgba(0, 135, 81, 0.55); }
 .btn-secondary { background: var(--gray-100); color: var(--gray-700); border: 1px solid var(--border); }
 .btn-secondary:hover { background: var(--gray-200); }
 .btn-outline { background: transparent; color: var(--primary); border: 1px solid var(--primary-border); }
@@ -147,14 +159,25 @@ body { font-family: var(--font); color: var(--text); background-color: var(--bg)
 /* Form inputs */
 .input {
   width: 100%; padding: 0.5rem 0.875rem;
-  border: 1px solid var(--border-strong);
+  border: 1px solid var(--input-border);
   border-radius: var(--radius); font-size: 0.875rem;
-  color: var(--text); background: var(--surface);
+  color: var(--text); background: var(--input-bg); caret-color: var(--primary);
   font-family: var(--font); outline: none;
   transition: border-color 0.15s, box-shadow 0.15s;
 }
-.input::placeholder { color: var(--text-muted); }
-.input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(26,86,219,0.1); }
+.input::placeholder { color: var(--placeholder); opacity: 1; }
+.input:hover:not(:disabled):not(:focus) { border-color: var(--input-border-hover); }
+.input:disabled { background: var(--input-disabled-bg); color: var(--text-secondary); cursor: not-allowed; }
+/* Keep browser autofill from painting fields white/blue and hiding the text */
+.input:-webkit-autofill,
+.input:-webkit-autofill:hover,
+.input:-webkit-autofill:focus {
+  -webkit-text-fill-color: var(--text);
+  -webkit-box-shadow: 0 0 0 1000px var(--input-bg) inset;
+  transition: background-color 9999s ease-out 0s;
+}
+.input:-webkit-autofill:focus { -webkit-box-shadow: 0 0 0 1000px var(--input-bg) inset, 0 0 0 3px rgba(0,135,81,0.18); }
+.input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(0,135,81,0.18); }
 
 /* Alert banners */
 .alert { display: flex; align-items: center; gap: 0.75rem; padding: 0.875rem 1rem; border-radius: var(--radius-md); font-size: 0.875rem; margin-bottom: 1rem; }

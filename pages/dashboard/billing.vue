@@ -218,7 +218,7 @@ const subscribe = async (plan: string) => {
 .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 
 .billing-wrap { display: flex; flex-direction: column; gap: 2rem; }
-.card { background: white; border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1.5rem; box-shadow: var(--shadow-sm); }
+.card { background: var(--cream); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1.5rem; box-shadow: var(--shadow-sm); }
 .section-label { font-size: 1rem; font-weight: 700; color: var(--gray-900); margin-bottom: 0.875rem; }
 
 /* Buttons */
@@ -226,7 +226,7 @@ const subscribe = async (plan: string) => {
 .b-btn-block { width: 100%; }
 .b-btn-primary { background: var(--primary); color: white; }
 .b-btn-primary:hover:not(:disabled) { background: var(--primary-dark); }
-.b-btn-outline { background: white; color: var(--primary); border-color: var(--primary); }
+.b-btn-outline { background: var(--cream); color: var(--primary); border-color: var(--primary); }
 .b-btn-outline:hover:not(:disabled) { background: var(--primary-light); }
 .b-btn:focus-visible { outline: 2px solid var(--primary-dark); outline-offset: 2px; }
 .b-btn:disabled { opacity: 0.6; cursor: not-allowed; }
@@ -242,19 +242,36 @@ const subscribe = async (plan: string) => {
 .notice-close { background: transparent; border: 0; color: inherit; cursor: pointer; padding: 2px; display: flex; opacity: 0.7; }
 .notice-close:hover { opacity: 1; }
 
-/* Current plan: solid green, the one emphasized block */
-.current-plan { background: var(--primary); color: white; border-radius: var(--radius-lg); padding: 1.5rem; display: flex; align-items: center; justify-content: space-between; gap: 1rem; box-shadow: var(--shadow-sm); }
+/* Current plan: landing CTA green, the one emphasized block */
+.current-plan { background: linear-gradient(90deg, #9acca8 0%, #acd5b6 50%, #9acca8 100%); color: var(--gray-900); border-radius: var(--radius-lg); padding: 1.5rem; display: flex; align-items: center; justify-content: space-between; gap: 1rem; box-shadow: var(--shadow-sm); }
+/* Brand green glows at both edges with a warm amber glow between them, same as the landing CTA */
+.current-plan { position: relative; isolation: isolate; overflow: hidden; }
+.current-plan::before {
+  content: ''; position: absolute; inset: -15% -10%; z-index: -1; pointer-events: none;
+  background:
+    radial-gradient(45% 90% at 8% 40%, rgba(0, 135, 81, 0.5), transparent 75%),
+    radial-gradient(45% 90% at 92% 60%, rgba(0, 135, 81, 0.5), transparent 75%),
+    radial-gradient(26% 50% at 50% 70%, rgba(255, 170, 90, 0.22), transparent 72%);
+  filter: blur(24px);
+  animation: warm-drift 14s ease-in-out infinite alternate;
+}
+@keyframes warm-drift {
+  0%   { transform: translate3d(-4%, 0, 0) scale(1); }
+  50%  { transform: translate3d(3%, 4%, 0) scale(1.08); }
+  100% { transform: translate3d(5%, -2%, 0) scale(1.02); }
+}
+@media (prefers-reduced-motion: reduce) { .current-plan::before { animation: none; } }
 .current-plan-left { display: flex; align-items: center; gap: 1rem; min-width: 0; }
-.current-plan-icon { width: 52px; height: 52px; background: rgba(255,255,255,0.2); border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.current-plan-icon { width: 52px; height: 52px; background: rgba(255, 253, 243, 0.55); color: var(--primary); border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
 .current-plan-info { min-width: 0; }
 .current-plan-name { font-size: 1.2rem; font-weight: 800; }
-.current-plan-leads { font-size: 0.9rem; color: rgba(255,255,255,0.9); margin-top: 2px; }
-.current-plan-expiry { display: flex; align-items: center; gap: 0.35rem; font-size: 0.8rem; color: rgba(255,255,255,0.8); margin-top: 4px; }
-.plan-pill { padding: 0.3rem 0.9rem; font-size: 0.8rem; font-weight: 700; text-transform: capitalize; color: var(--primary); background: white; border-radius: 999px; flex-shrink: 0; }
+.current-plan-leads { font-size: 0.9rem; color: var(--text-secondary); margin-top: 2px; }
+.current-plan-expiry { display: flex; align-items: center; gap: 0.35rem; font-size: 0.8rem; color: var(--text-secondary); margin-top: 4px; }
+.plan-pill { padding: 0.3rem 0.9rem; font-size: 0.8rem; font-weight: 700; text-transform: capitalize; color: var(--primary); background: var(--cream); border-radius: 999px; flex-shrink: 0; }
 
 /* Plans: 4 / 2 / 1 columns */
 .plans-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; padding-top: 0.75rem; }
-.plan-card { background: white; border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1.5rem; position: relative; transition: box-shadow 0.15s; display: flex; flex-direction: column; gap: 1rem; min-width: 0; }
+.plan-card { background: var(--cream); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1.5rem; position: relative; transition: box-shadow 0.15s; display: flex; flex-direction: column; gap: 1rem; min-width: 0; }
 .plan-card:hover { box-shadow: var(--shadow-md); }
 .plan-card-active { border-color: var(--primary); background: var(--primary-light); }
 .plan-card-featured { border-color: var(--primary); box-shadow: 0 0 0 1px var(--primary), var(--shadow-md); }
@@ -271,7 +288,7 @@ const subscribe = async (plan: string) => {
 .secure-note { display: flex; align-items: center; gap: 0.4rem; margin-top: 1rem; font-size: 0.8rem; color: var(--text-muted); }
 
 /* Payment history */
-.table-card { background: white; border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; box-shadow: var(--shadow-sm); }
+.table-card { background: var(--cream); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; box-shadow: var(--shadow-sm); }
 .empty-payments { padding: 3rem 1.5rem; text-align: center; }
 .empty-icon { width: 52px; height: 52px; margin: 0 auto 0.875rem; border-radius: 50%; background: var(--primary-light); color: var(--primary); display: flex; align-items: center; justify-content: center; }
 .empty-title { font-weight: 700; color: var(--gray-900); margin-bottom: 0.25rem; }
@@ -281,7 +298,7 @@ const subscribe = async (plan: string) => {
 .pay-table th { text-align: left; padding: 0.75rem 1.25rem; font-size: 0.78rem; font-weight: 600; color: var(--text-muted); background: var(--primary-light); border-bottom: 1px solid var(--primary-border); }
 .pay-table td { padding: 0.95rem 1.25rem; border-bottom: 1px solid var(--border); font-size: 0.875rem; }
 .pay-table tbody tr:last-child td { border-bottom: 0; }
-.pay-table tbody tr:hover { background: #f4faf7; }
+.pay-table tbody tr:hover { background: #F3EBC0; }
 .pay-amount { font-weight: 700; color: var(--gray-900); }
 .pay-date { color: var(--text-secondary); font-size: 0.85rem; }
 
@@ -298,7 +315,7 @@ const subscribe = async (plan: string) => {
 .error-sub { font-size: 0.85rem; color: var(--text-muted); }
 
 /* Skeleton */
-.sk { background: linear-gradient(90deg, var(--primary-light) 25%, #f4faf7 50%, var(--primary-light) 75%); background-size: 200% 100%; animation: shimmer 1.4s ease-in-out infinite; border-radius: var(--radius-lg); }
+.sk { background: linear-gradient(90deg, #F3EBC0 25%, var(--cream) 50%, #F3EBC0 75%); background-size: 200% 100%; animation: shimmer 1.4s ease-in-out infinite; border-radius: var(--radius-lg); }
 @keyframes shimmer { from { background-position: 200% 0; } to { background-position: -200% 0; } }
 .sk-current { height: 100px; }
 .sk-plan { height: 300px; }

@@ -181,7 +181,7 @@ const quickActions = computed(() => {
 .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 
 /* Shared card */
-.card { background: white; border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1.5rem; box-shadow: var(--shadow-sm); }
+.card { background: var(--cream); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1.5rem; box-shadow: var(--shadow-sm); }
 .card-eyebrow { font-size: 0.75rem; color: var(--text-muted); font-weight: 500; margin-bottom: 0.25rem; }
 .card-title { font-size: 0.95rem; font-weight: 700; color: var(--gray-900); margin-bottom: 1rem; }
 
@@ -194,7 +194,7 @@ const quickActions = computed(() => {
 
 /* Stats */
 .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 1.25rem; }
-.stat-card { background: white; border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1.25rem; display: flex; align-items: center; gap: 1rem; box-shadow: var(--shadow-sm); min-width: 0; transition: border-color 0.15s, box-shadow 0.15s; }
+.stat-card { background: var(--cream); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1.25rem; display: flex; align-items: center; gap: 1rem; box-shadow: var(--shadow-sm); min-width: 0; transition: border-color 0.15s, box-shadow 0.15s; }
 .stat-card:hover { box-shadow: var(--shadow-md); border-color: var(--primary-border); }
 .stat-icon { width: 46px; height: 46px; border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; flex-shrink: 0; background: var(--primary-light); color: var(--primary); }
 .stat-body { min-width: 0; }
@@ -202,11 +202,28 @@ const quickActions = computed(() => {
 .stat-value { font-size: 1.5rem; font-weight: 800; color: var(--gray-900); letter-spacing: -0.01em; line-height: 1.15; overflow-wrap: anywhere; }
 
 /* The one emphasized card: leads remaining */
-.stat-card-featured { background: var(--primary); border-color: var(--primary); }
+.stat-card-featured { background: linear-gradient(90deg, #9acca8 0%, #acd5b6 50%, #9acca8 100%); border-color: #9acca8; }
 .stat-card-featured:hover { border-color: var(--primary-dark); }
-.stat-card-featured .stat-icon { background: rgba(255,255,255,0.2); color: white; }
-.stat-card-featured .stat-label { color: rgba(255,255,255,0.85); }
-.stat-card-featured .stat-value { color: white; }
+.stat-card-featured .stat-icon { background: rgba(255, 253, 243, 0.55); color: var(--primary); }
+.stat-card-featured .stat-label { color: var(--text-secondary); }
+.stat-card-featured .stat-value { color: var(--text-accent); }
+/* Brand green glows at both edges with a warm amber glow between them, same as the landing CTA */
+.stat-card-featured { position: relative; isolation: isolate; overflow: hidden; }
+.stat-card-featured::before {
+  content: ''; position: absolute; inset: -15% -10%; z-index: -1; pointer-events: none;
+  background:
+    radial-gradient(45% 90% at 8% 40%, rgba(0, 135, 81, 0.5), transparent 75%),
+    radial-gradient(45% 90% at 92% 60%, rgba(0, 135, 81, 0.5), transparent 75%),
+    radial-gradient(26% 50% at 50% 70%, rgba(255, 170, 90, 0.22), transparent 72%);
+  filter: blur(24px);
+  animation: warm-drift 14s ease-in-out infinite alternate;
+}
+@keyframes warm-drift {
+  0%   { transform: translate3d(-4%, 0, 0) scale(1); }
+  50%  { transform: translate3d(3%, 4%, 0) scale(1.08); }
+  100% { transform: translate3d(5%, -2%, 0) scale(1.02); }
+}
+@media (prefers-reduced-motion: reduce) { .stat-card-featured::before { animation: none; } }
 
 /* Plan + actions */
 .dash-row { display: grid; grid-template-columns: 320px 1fr; gap: 1.25rem; align-items: start; }
@@ -226,11 +243,11 @@ const quickActions = computed(() => {
 
 /* Quick actions */
 .quick-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
-.quick-item { display: flex; align-items: center; gap: 0.875rem; padding: 1rem; min-height: 68px; border: 1px solid var(--border); border-radius: var(--radius-md); text-decoration: none; background: white; transition: border-color 0.15s, background 0.15s; }
+.quick-item { display: flex; align-items: center; gap: 0.875rem; padding: 1rem; min-height: 68px; border: 1px solid var(--border); border-radius: var(--radius-md); text-decoration: none; background: var(--cream); transition: border-color 0.15s, background 0.15s; }
 .quick-item:hover { border-color: var(--primary-border); background: var(--primary-light); }
 .quick-item:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
 .quick-item-icon { width: 40px; height: 40px; border-radius: var(--radius); display: flex; align-items: center; justify-content: center; flex-shrink: 0; background: var(--primary-light); color: var(--primary); }
-.quick-item:hover .quick-item-icon { background: white; }
+.quick-item:hover .quick-item-icon { background: var(--cream); }
 .quick-item-text { flex: 1; min-width: 0; }
 .quick-item-label { font-size: 0.875rem; font-weight: 600; color: var(--gray-800); }
 .quick-item-sub { font-size: 0.78rem; color: var(--text-muted); line-height: 1.35; }
@@ -245,7 +262,7 @@ const quickActions = computed(() => {
 .error-sub { font-size: 0.85rem; color: var(--text-muted); }
 
 /* Skeleton */
-.sk { background: linear-gradient(90deg, var(--primary-light) 25%, #f4faf7 50%, var(--primary-light) 75%); background-size: 200% 100%; animation: shimmer 1.4s ease-in-out infinite; border-radius: var(--radius-md); }
+.sk { background: linear-gradient(90deg, #F3EBC0 25%, var(--cream) 50%, #F3EBC0 75%); background-size: 200% 100%; animation: shimmer 1.4s ease-in-out infinite; border-radius: var(--radius-md); }
 @keyframes shimmer { from { background-position: 200% 0; } to { background-position: -200% 0; } }
 .skeleton-card { min-height: 88px; }
 .sk-icon { width: 46px; height: 46px; flex-shrink: 0; }
@@ -279,8 +296,8 @@ const quickActions = computed(() => {
 
 @media (hover: none) {
   .stat-card:hover { box-shadow: var(--shadow-sm); border-color: var(--border); }
-  .stat-card-featured:hover { border-color: var(--primary); }
-  .quick-item:hover { background: white; border-color: var(--border); }
+  .stat-card-featured:hover { border-color: #9acca8; }
+  .quick-item:hover { background: var(--cream); border-color: var(--border); }
   .quick-item:hover .quick-item-icon { background: var(--primary-light); }
   .quick-item:hover .quick-item-arrow { transform: none; color: var(--gray-500); }
 }

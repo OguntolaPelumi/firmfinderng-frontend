@@ -351,7 +351,7 @@ const changePassword = async () => {
 .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 
 .profile-wrap, .profile-form { display: flex; flex-direction: column; gap: 1.5rem; }
-.card { background: white; border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1.5rem; box-shadow: var(--shadow-sm); }
+.card { background: var(--cream); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1.5rem; box-shadow: var(--shadow-sm); }
 .section-label { font-size: 1rem; font-weight: 700; color: var(--gray-900); margin-bottom: 1rem; }
 
 /* Buttons */
@@ -359,12 +359,12 @@ const changePassword = async () => {
 .p-btn-sm { height: 36px; padding: 0 0.875rem; font-size: 0.82rem; }
 .p-btn-primary { background: var(--primary); color: white; }
 .p-btn-primary:hover:not(:disabled) { background: var(--primary-dark); }
-.p-btn-outline { background: white; color: var(--primary); border-color: var(--primary); }
+.p-btn-outline { background: var(--cream); color: var(--primary); border-color: var(--primary); }
 .p-btn-outline:hover:not(:disabled) { background: var(--primary-light); }
-.p-btn-light { background: white; color: var(--primary-dark); }
-.p-btn-light:hover { background: var(--primary-light); }
-.p-btn-ghost { background: transparent; color: white; border-color: rgba(255,255,255,0.5); }
-.p-btn-ghost:hover { background: rgba(255,255,255,0.12); }
+.p-btn-light { background: var(--cream); color: var(--primary); border-color: var(--primary); }
+.p-btn-light:hover { background: #F3EBC0; }
+.p-btn-ghost { background: rgba(255, 253, 243, 0.55); color: var(--gray-900); border-color: rgba(214, 160, 100, 0.35); }
+.p-btn-ghost:hover { background: rgba(255, 253, 243, 0.85); }
 .p-btn:focus-visible, .p-btn:focus-within { outline: 2px solid var(--primary-dark); outline-offset: 2px; }
 .p-btn:disabled { opacity: 0.6; cursor: not-allowed; }
 .spinner { width: 16px; height: 16px; border: 2px solid rgba(255,255,255,0.4); border-top-color: white; border-radius: 50%; animation: spin 0.7s linear infinite; }
@@ -380,17 +380,34 @@ const changePassword = async () => {
 .notice-close:hover { opacity: 1; }
 
 /* Hero */
-.hero { background: var(--primary); color: white; border-radius: var(--radius-lg); padding: 1.5rem; display: flex; align-items: center; justify-content: space-between; gap: 1rem; box-shadow: var(--shadow-sm); flex-wrap: wrap; }
+.hero { background: linear-gradient(90deg, #9acca8 0%, #acd5b6 50%, #9acca8 100%); color: var(--gray-900); border-radius: var(--radius-lg); padding: 1.5rem; display: flex; align-items: center; justify-content: space-between; gap: 1rem; box-shadow: var(--shadow-sm); flex-wrap: wrap; }
+/* Brand green glows at both edges with a warm amber glow between them, same as the landing CTA */
+.hero { position: relative; isolation: isolate; overflow: hidden; }
+.hero::before {
+  content: ''; position: absolute; inset: -15% -10%; z-index: -1; pointer-events: none;
+  background:
+    radial-gradient(45% 90% at 8% 40%, rgba(0, 135, 81, 0.5), transparent 75%),
+    radial-gradient(45% 90% at 92% 60%, rgba(0, 135, 81, 0.5), transparent 75%),
+    radial-gradient(26% 50% at 50% 70%, rgba(255, 170, 90, 0.22), transparent 72%);
+  filter: blur(24px);
+  animation: warm-drift 14s ease-in-out infinite alternate;
+}
+@keyframes warm-drift {
+  0%   { transform: translate3d(-4%, 0, 0) scale(1); }
+  50%  { transform: translate3d(3%, 4%, 0) scale(1.08); }
+  100% { transform: translate3d(5%, -2%, 0) scale(1.02); }
+}
+@media (prefers-reduced-motion: reduce) { .hero::before { animation: none; } }
 .hero-left { display: flex; align-items: center; gap: 1rem; min-width: 0; }
-.avatar { width: 76px; height: 76px; border-radius: 50%; background: rgba(255,255,255,0.2); border: 3px solid rgba(255,255,255,0.6); display: flex; align-items: center; justify-content: center; font-size: 1.5rem; font-weight: 800; flex-shrink: 0; overflow: hidden; }
+.avatar { width: 76px; height: 76px; border-radius: 50%; background: rgba(255, 253, 243, 0.55); border: 3px solid rgba(251, 246, 218, 0.9); color: var(--primary); display: flex; align-items: center; justify-content: center; font-size: 1.5rem; font-weight: 800; flex-shrink: 0; overflow: hidden; }
 .avatar-img { width: 100%; height: 100%; object-fit: cover; }
 .hero-info { min-width: 0; }
 .hero-name { font-size: 1.25rem; font-weight: 800; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.hero-meta { font-size: 0.9rem; color: rgba(255,255,255,0.9); margin-top: 2px; }
-.hero-since { display: flex; align-items: center; gap: 0.35rem; font-size: 0.8rem; color: rgba(255,255,255,0.8); margin-top: 4px; }
+.hero-meta { font-size: 0.9rem; color: var(--text-secondary); margin-top: 2px; }
+.hero-since { display: flex; align-items: center; gap: 0.35rem; font-size: 0.8rem; color: var(--text-secondary); margin-top: 4px; }
 .hero-actions { display: flex; flex-direction: column; align-items: flex-end; gap: 0.75rem; }
 .avatar-btns { display: flex; gap: 0.5rem; flex-wrap: wrap; }
-.plan-pill { padding: 0.3rem 0.9rem; font-size: 0.8rem; font-weight: 700; text-transform: capitalize; color: var(--primary); background: white; border-radius: 999px; }
+.plan-pill { padding: 0.3rem 0.9rem; font-size: 0.8rem; font-weight: 700; text-transform: capitalize; color: var(--primary); background: var(--cream); border-radius: 999px; }
 
 /* Form */
 .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem 1.25rem; }
@@ -399,8 +416,7 @@ const changePassword = async () => {
 .field label { font-size: 0.82rem; font-weight: 600; color: var(--gray-700); }
 .field .input { height: 44px; }
 .field .textarea { height: auto; resize: vertical; min-height: 88px; line-height: 1.5; padding-top: 0.625rem; }
-.input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(0,135,81,0.12); }
-.input:disabled { background: var(--gray-50); color: var(--text-secondary); cursor: not-allowed; }
+.input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(0,135,81,0.18); }
 .field-hint { font-size: 0.75rem; color: var(--text-muted); }
 .field-error { font-size: 0.78rem; color: #b91c1c; }
 
@@ -424,7 +440,7 @@ const changePassword = async () => {
 .error-sub { font-size: 0.85rem; color: var(--text-muted); }
 
 /* Skeleton */
-.sk { background: linear-gradient(90deg, var(--primary-light) 25%, #f4faf7 50%, var(--primary-light) 75%); background-size: 200% 100%; animation: shimmer 1.4s ease-in-out infinite; border-radius: var(--radius-lg); }
+.sk { background: linear-gradient(90deg, #F3EBC0 25%, var(--cream) 50%, #F3EBC0 75%); background-size: 200% 100%; animation: shimmer 1.4s ease-in-out infinite; border-radius: var(--radius-lg); }
 @keyframes shimmer { from { background-position: 200% 0; } to { background-position: -200% 0; } }
 .sk-hero { height: 124px; }
 .sk-card { height: 260px; }
