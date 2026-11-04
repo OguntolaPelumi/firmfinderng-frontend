@@ -133,13 +133,14 @@
           <span style="font-weight:700;color:var(--gray-700)">
             FirmFinder<span style="color:var(--text-accent)">NG</span>
           </span>
-          <span class="footer-credit">by NewHeaven IT Solutions</span>
         </div>
         <div class="footer-links">
-          <a href="https://newheavenitsolutions.com" target="_blank" rel="noopener">NewHeaven IT Solutions</a>
           <NuxtLink to="/login">Sign In</NuxtLink>
           <NuxtLink to="/register">Register</NuxtLink>
         </div>
+      </div>
+      <div class="footer-bottom">
+        <a href="https://www.newheavenitsolutions.com" target="_blank" rel="noopener" class="footer-made">created by newheavenitsolutions</a>
       </div>
     </footer>
 
@@ -343,7 +344,11 @@ const shownPlans = computed(() => freeAccess ? [launchPlan] : plans)
 .footer { padding: 1.5rem 2rem; border-top: 1px solid var(--border); background: var(--cream); }
 .footer-inner { max-width: 1200px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
 .footer-brand { display: flex; align-items: center; flex-wrap: wrap; gap: 0.5rem; }
-.footer-credit { font-size: 0.75rem; color: var(--text-muted); }
+/* Bottom credit line, centred under everything else */
+.footer-bottom { max-width: 1200px; margin: 1.25rem auto 0; padding-top: 1rem; border-top: 1px solid var(--border); text-align: center; }
+.footer-made { font-size: 0.8rem; font-weight: 500; color: var(--text-muted); text-decoration: none; transition: color 0.15s; }
+.footer-made:hover { color: var(--primary); text-decoration: underline; }
+.footer-made:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; border-radius: 2px; }
 .footer-links { display: flex; flex-wrap: wrap; gap: 0.5rem 1.5rem; }
 .footer-links a { font-size: 0.8rem; color: var(--text-muted); text-decoration: none; }
 .footer-links a:hover { color: var(--primary); }
