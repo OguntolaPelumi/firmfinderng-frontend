@@ -58,6 +58,10 @@
         <!-- Plans -->
         <section aria-labelledby="plans-heading">
           <h2 id="plans-heading" class="section-label">Available plans</h2>
+          <div v-if="!paymentsEnabled" class="soon-banner" role="note">
+            <Icon name="ph:hourglass-medium-fill" style="flex-shrink:0;font-size:1.1rem" />
+            <span>Paid plans are coming soon. We're finishing payment setup, and you'll be able to upgrade here shortly. Your free plan, including CSV export, keeps working in the meantime.</span>
+          </div>
           <div class="plans-grid">
             <div
               v-for="(plan, key) in plans"
@@ -82,6 +86,14 @@
                   <Icon name="ph:check-circle-fill" /> Current plan
                 </div>
                 <button
+                  v-else-if="key !== 'free' && !paymentsEnabled"
+                  type="button"
+                  class="b-btn b-btn-block b-btn-outline"
+                  disabled
+                >
+                  Coming soon
+                </button>
+                <button
                   v-else-if="key !== 'free'"
                   type="button"
                   class="b-btn b-btn-block"
@@ -95,7 +107,7 @@
               </div>
             </div>
           </div>
-          <p class="secure-note">
+          <p v-if="paymentsEnabled" class="secure-note">
             <Icon name="ph:lock-simple-fill" style="font-size:0.9rem" />
             Payments are processed securely by Paystack.
           </p>
@@ -136,8 +148,13 @@
 
 <script setup lang="ts">
 definePageMeta({ middleware: ['auth', 'paid-only'] })
-const { api } = useAuth()
+const { api, paymentsEnabled } = useAuth()
 const config = useRuntimeConfig()
+
+// Paystack's checkout script is only needed here, and only once payments are open
+if (paymentsEnabled) {
+  useHead({ script: [{ src: 'https://js.paystack.co/v1/inline.js', async: true }] })
+}
 const status = ref<any>(null)
 const loading = ref(true)
 const loadError = ref(false)
@@ -197,8 +214,13 @@ const subscribe = async (plan: string) => {
       },
     })
     handler.openIframe()
-  } catch {
-    notice.value = { type: 'error', text: 'Payment could not be started. Please try again.' }
+  } catch (err: any) {
+    notice.value = {
+      type: 'error',
+      text: err?.data?.code === 'payments_disabled'
+        ? 'Paid plans are coming soon. Payments are not open yet.'
+        : 'Payment could not be started. Please try again.',
+    }
     subscribing.value = null
   }
 }
@@ -268,6 +290,9 @@ const subscribe = async (plan: string) => {
 .current-plan-leads { font-size: 0.9rem; color: var(--text-secondary); margin-top: 2px; }
 .current-plan-expiry { display: flex; align-items: center; gap: 0.35rem; font-size: 0.8rem; color: var(--text-secondary); margin-top: 4px; }
 .plan-pill { padding: 0.3rem 0.9rem; font-size: 0.8rem; font-weight: 700; text-transform: capitalize; color: var(--primary); background: var(--cream); border-radius: 999px; flex-shrink: 0; }
+
+/* Payments not open yet */
+.soon-banner { display: flex; align-items: flex-start; gap: 0.625rem; padding: 0.875rem 1rem; margin-bottom: 1rem; font-size: 0.875rem; line-height: 1.5; color: #00603a; background: var(--primary-light); border: 1px solid var(--primary-border); border-radius: var(--radius-md); }
 
 /* Plans: 4 / 2 / 1 columns */
 .plans-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; padding-top: 0.75rem; }

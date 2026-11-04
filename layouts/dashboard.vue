@@ -15,7 +15,7 @@
               <div class="dash-leads-dot" />
               <span>{{ leadsRemaining === null ? 'Unlimited leads' : `${leadsRemaining.toLocaleString()} leads remaining` }}</span>
             </div>
-            <NuxtLink v-if="!freeAccess && user?.subscription_plan === 'free'" to="/dashboard/billing" class="btn btn-primary btn-sm">
+            <NuxtLink v-if="!freeAccess && paymentsEnabled && user?.subscription_plan === 'free'" to="/dashboard/billing" class="btn btn-primary btn-sm">
               Upgrade Plan
             </NuxtLink>
           </div>
@@ -35,7 +35,7 @@
 
 <script setup lang="ts">
 defineProps<{ title?: string; subtitle?: string }>()
-const { user, fetchUser, freeAccess, leadsRemaining } = useAuth()
+const { user, fetchUser, freeAccess, paymentsEnabled, leadsRemaining } = useAuth()
 
 // Header blends into the page at the top and gets its warm animated background once scrolled
 const scrolled = ref(false)

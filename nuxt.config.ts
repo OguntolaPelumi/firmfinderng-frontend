@@ -9,6 +9,9 @@ export default defineNuxtConfig({
       // Free launch: hides pricing, billing and upgrade prompts. Off by default; set
       // NUXT_PUBLIC_FREE_ACCESS=true together with FREE_ACCESS_MODE=True on the backend.
       freeAccess: process.env.NUXT_PUBLIC_FREE_ACCESS === 'true',
+      // Paid upgrades show "Coming soon" until NUXT_PUBLIC_PAYMENTS_ENABLED=true
+      // (with PAYMENTS_ENABLED=True on the backend) once Paystack verification is done.
+      paymentsEnabled: process.env.NUXT_PUBLIC_PAYMENTS_ENABLED === 'true',
     }
   },
   app: {
@@ -21,9 +24,6 @@ export default defineNuxtConfig({
         { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
         { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap' }
       ],
-      script: [
-        { src: 'https://js.paystack.co/v1/inline.js', async: true }
-      ]
     }
   }
 })

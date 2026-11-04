@@ -9,6 +9,8 @@ export const useAuth = () => {
 
   // Pricing and upgrade UI only shows when the site is not in free launch mode
   const freeAccess = !!config.public.freeAccess
+  // Paid checkout stays closed until Paystack is ready
+  const paymentsEnabled = !!config.public.paymentsEnabled
   // The backend decides access; fall back to the plan for responses that predate these fields
   const hasFullAccess = computed(() => user.value?.has_full_access ?? (freeAccess || user.value?.subscription_plan !== 'free'))
   // CSV export is open to every plan, within its monthly lead allowance
@@ -87,6 +89,7 @@ export const useAuth = () => {
     user,
     isAuthenticated,
     freeAccess,
+    paymentsEnabled,
     hasFullAccess,
     canExport,
     hasPremiumReports,

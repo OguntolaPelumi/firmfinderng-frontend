@@ -93,7 +93,7 @@
               Find leads <Icon name="ph:arrow-right" />
             </NuxtLink>
             <NuxtLink v-else-if="stats.plan !== 'enterprise'" to="/dashboard/billing" class="dash-btn dash-btn-primary dash-btn-block">
-              Upgrade plan <Icon name="ph:arrow-right" />
+              {{ paymentsEnabled ? 'Upgrade plan' : 'See plans' }} <Icon name="ph:arrow-right" />
             </NuxtLink>
           </section>
 
@@ -122,7 +122,7 @@
 
 <script setup lang="ts">
 definePageMeta({ middleware: 'auth' })
-const { api, freeAccess } = useAuth()
+const { api, freeAccess, paymentsEnabled } = useAuth()
 const loading = ref(true)
 const loadError = ref(false)
 const stats = ref<any>({})

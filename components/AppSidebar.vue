@@ -71,7 +71,7 @@
             </div>
             <span class="sidebar-plan-usage">{{ leadsRemaining.toLocaleString() }} leads left</span>
           </div>
-          <NuxtLink v-if="!freeAccess && user?.subscription_plan === 'free'" to="/dashboard/billing" class="sidebar-upgrade-btn">
+          <NuxtLink v-if="!freeAccess && paymentsEnabled && user?.subscription_plan === 'free'" to="/dashboard/billing" class="sidebar-upgrade-btn">
             Upgrade plan <Icon name="ph:arrow-right" />
           </NuxtLink>
         </div>
@@ -94,7 +94,7 @@
 </template>
 
 <script setup lang="ts">
-const { user, logout, freeAccess, leadsRemaining } = useAuth()
+const { user, logout, freeAccess, paymentsEnabled, leadsRemaining } = useAuth()
 const route = useRoute()
 
 // Shared state so a layout header button can also open the drawer: useState('sidebar-open')

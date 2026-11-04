@@ -83,7 +83,7 @@
         <div class="section-header">
           <p class="section-eyebrow">Pricing</p>
           <h2 class="section-title">{{ freeAccess ? 'Free while we launch' : 'Simple, transparent pricing' }}</h2>
-          <p class="section-sub">{{ freeAccess ? 'Every feature is unlocked for every account. No card, no catch.' : 'Start free. Upgrade when you are ready.' }}</p>
+          <p class="section-sub">{{ freeAccess ? 'Every feature is unlocked for every account. No card, no catch.' : paymentsEnabled ? 'Start free. Upgrade when you are ready.' : 'Start free today. Paid plans are coming soon.' }}</p>
         </div>
         <div class="pricing-grid" :class="{ 'pricing-grid-single': freeAccess }">
           <div v-for="plan in shownPlans" :key="plan.name"
@@ -102,7 +102,11 @@
                 <span>{{ f }}</span>
               </li>
             </ul>
-            <NuxtLink to="/register"
+            <!-- Paid tiers can't be bought until checkout opens -->
+            <span v-if="plan.paid && !paymentsEnabled" class="btn btn-lg btn-outline pricing-btn pricing-btn-soon" aria-disabled="true">
+              Coming soon
+            </span>
+            <NuxtLink v-else to="/register"
               class="btn btn-lg pricing-btn"
               :class="plan.featured ? 'btn-primary' : 'btn-outline'">
               {{ plan.cta }}
@@ -181,7 +185,7 @@ const features = [
   { icon: 'ph:export-fill', title: 'Instant Export', desc: 'Download filtered leads as CSV or Excel with one click. Ready for your CRM immediately.' },
 ]
 
-const { freeAccess } = useAuth()
+const { freeAccess, paymentsEnabled } = useAuth()
 
 const launchPlan = {
   name: 'Free access', price: '₦0', period: '/month', desc: 'Full access while FirmFinderNG is in launch', featured: true, cta: 'Create free account',
@@ -190,9 +194,9 @@ const launchPlan = {
 
 const plans = [
   { name: 'Free', price: '₦0', period: '/month', desc: 'Get started with limited access', featured: false, cta: 'Start Free', features: ['20 lead previews/month', 'Basic search and filter', 'CSV export', 'Community support'] },
-  { name: 'Basic', price: '₦15,000', period: '/month', desc: 'For growing businesses', featured: false, cta: 'Get Basic', features: ['500 full leads/month', 'CSV export', '1 industry filter', 'Email support'] },
-  { name: 'Pro', price: '₦35,000', period: '/month', desc: 'For serious lead generation', featured: true, cta: 'Get Pro', features: ['2,000 leads/month', 'Excel + CSV export', 'All industries', 'Competitor tracking', 'Market reports', 'Priority support'] },
-  { name: 'Enterprise', price: '₦80,000', period: '/month', desc: 'For agencies and large teams', featured: false, cta: 'Get Enterprise', features: ['Unlimited leads', 'API access', 'Weekly reports', 'All Pro features', 'Dedicated support'] },
+  { paid: true, name: 'Basic', price: '₦15,000', period: '/month', desc: 'For growing businesses', featured: false, cta: 'Get Basic', features: ['500 full leads/month', 'CSV export', '1 industry filter', 'Email support'] },
+  { paid: true, name: 'Pro', price: '₦35,000', period: '/month', desc: 'For serious lead generation', featured: true, cta: 'Get Pro', features: ['2,000 leads/month', 'Excel + CSV export', 'All industries', 'Competitor tracking', 'Market reports', 'Priority support'] },
+  { paid: true, name: 'Enterprise', price: '₦80,000', period: '/month', desc: 'For agencies and large teams', featured: false, cta: 'Get Enterprise', features: ['Unlimited leads', 'API access', 'Weekly reports', 'All Pro features', 'Dedicated support'] },
 ]
 
 const shownPlans = computed(() => freeAccess ? [launchPlan] : plans)
@@ -296,6 +300,7 @@ const shownPlans = computed(() => freeAccess ? [launchPlan] : plans)
 .pricing-features { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 0.625rem; flex: 1; }
 .pricing-features li { display: flex; align-items: flex-start; gap: 0.5rem; font-size: 0.825rem; color: var(--gray-700); }
 .pricing-btn { width: 100%; justify-content: center; margin-top: 1.5rem; }
+.pricing-btn-soon { opacity: 0.6; cursor: default; pointer-events: none; }
 
 /* CTA */
 .cta-section {
