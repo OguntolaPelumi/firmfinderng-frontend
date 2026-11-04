@@ -422,6 +422,9 @@ const shownPlans = computed(() => freeAccess ? [launchPlan] : plans)
 
 /* ---------- Tablets & mobile: collapsible nav ---------- */
 @media (max-width: 768px) {
+  /* Small screens: the nav belongs to the hero and scrolls away with it instead of staying pinned */
+  .nav { position: absolute; }
+  #features, #pricing { scroll-margin-top: 1rem; }
   .nav-inner { padding: 1rem 1.25rem; }
   .nav-toggle { display: inline-flex; }
   .nav-logo-mark { width: 34px; height: 34px; }
