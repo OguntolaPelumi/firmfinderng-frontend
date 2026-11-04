@@ -87,7 +87,8 @@ onBeforeUnmount(() => window.removeEventListener('scroll', onScroll))
 
 /* Phones: the header scrolls away with the page instead of staying pinned, like the landing nav */
 @media (max-width: 768px) {
-  .dash-header { position: static; }
+  /* relative, not static: keeps the header's background layer inside the header instead of covering the page */
+  .dash-header { position: relative; }
   .dash-header.scrolled { backdrop-filter: none; border-bottom-color: transparent; box-shadow: none; }
   .dash-header.scrolled::before { opacity: 0; }
 }
