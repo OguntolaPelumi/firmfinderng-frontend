@@ -135,7 +135,7 @@
 </template>
 
 <script setup lang="ts">
-definePageMeta({ middleware: 'auth' })
+definePageMeta({ middleware: ['auth', 'paid-only'] })
 const { api } = useAuth()
 const config = useRuntimeConfig()
 const status = ref<any>(null)

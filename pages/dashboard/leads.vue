@@ -39,7 +39,7 @@
             <option value="true">Has email</option>
           </select>
 
-          <!-- Free plan can't export: send them to upgrade instead of a failing button -->
+          <!-- Accounts without export get sent to upgrade instead of a failing button -->
           <NuxtLink v-if="isFree" to="/dashboard/billing" class="l-btn l-btn-outline export-btn">
             <Icon name="ph:lock-simple-fill" /> Export CSV
           </NuxtLink>
@@ -114,11 +114,13 @@
                   <td data-label="Location" class="td-location">{{ [biz.state_name, biz.city].filter(Boolean).join(', ') || '—' }}</td>
                   <td data-label="Phone">
                     <span v-if="biz.phone" class="td-contact">{{ biz.phone }}</span>
-                    <span v-else class="td-locked"><Icon name="ph:lock-simple-fill" /> Upgrade</span>
+                    <span v-else-if="isFree" class="td-locked"><Icon name="ph:lock-simple-fill" /> Upgrade</span>
+                    <span v-else class="td-muted">—</span>
                   </td>
                   <td data-label="Email">
                     <span v-if="biz.email" class="td-contact td-email">{{ biz.email }}</span>
-                    <span v-else class="td-locked"><Icon name="ph:lock-simple-fill" /> Upgrade</span>
+                    <span v-else-if="isFree" class="td-locked"><Icon name="ph:lock-simple-fill" /> Upgrade</span>
+                    <span v-else class="td-muted">—</span>
                   </td>
                   <td data-label="Website">
                     <a v-if="biz.website" :href="biz.website" target="_blank" rel="noopener noreferrer" class="td-link">Visit <Icon name="ph:arrow-up-right" /></a>
@@ -151,7 +153,7 @@
 
 <script setup lang="ts">
 definePageMeta({ middleware: 'auth' })
-const { api, user } = useAuth()
+const { api, hasFullAccess, fetchUser } = useAuth()
 const config = useRuntimeConfig()
 
 const PAGE_SIZE = 20
@@ -164,7 +166,7 @@ const tableCard = ref<HTMLElement | null>(null)
 const totalPages = computed(() => Math.ceil(count.value / PAGE_SIZE))
 const rangeStart = computed(() => (page.value - 1) * PAGE_SIZE + 1)
 const rangeEnd = computed(() => Math.min((page.value - 1) * PAGE_SIZE + leads.value.length, count.value))
-const isFree = computed(() => user.value?.subscription_plan === 'free')
+const isFree = computed(() => !hasFullAccess.value)
 const hasFilters = computed(() => !!(search.value || selectedIndustry.value || selectedState.value || hasEmail.value))
 
 const buildParams = () => {
@@ -226,8 +228,16 @@ const exportLeads = async () => {
     }
     const blob = await response.blob()
     const url = URL.createObjectURL(blob)
-    const a = document.createElement('a'); a.href = url; a.download = `nigeria_leads_${Date.now()}.csv`; a.click()
+    const a = document.createElement('a'); a.href = url; a.download = `firmfinderng_leads_${Date.now()}.csv`; a.click()
     URL.revokeObjectURL(url)
+
+    // Large searches are trimmed to the per-file cap; tell the user so they can narrow it down
+    const exported = Number(response.headers.get('X-Export-Count'))
+    const maxRows = Number(response.headers.get('X-Export-Max-Rows'))
+    if (maxRows && exported >= maxRows && count.value > exported) {
+      notice.value = `Exported the first ${exported.toLocaleString()} of ${count.value.toLocaleString()} businesses. Add filters to export a different set.`
+    }
+    fetchUser() // refresh the leads counter in the header and sidebar
   } catch { notice.value = 'Export failed. Please try again.' }
   finally { exporting.value = false }
 }

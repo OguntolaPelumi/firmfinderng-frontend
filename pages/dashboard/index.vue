@@ -61,13 +61,17 @@
           <section class="card plan-card" aria-labelledby="plan-heading">
             <div class="plan-top">
               <div>
-                <p id="plan-heading" class="card-eyebrow">Current plan</p>
-                <p class="plan-name">{{ stats.plan?.toUpperCase() || 'FREE' }}</p>
+                <p id="plan-heading" class="card-eyebrow">{{ freeAccess ? 'Your access' : 'Current plan' }}</p>
+                <p class="plan-name">{{ freeAccess ? 'FREE ACCESS' : stats.plan?.toUpperCase() || 'FREE' }}</p>
               </div>
-              <span class="plan-badge">{{ stats.plan || 'free' }}</span>
+              <span class="plan-badge">{{ freeAccess ? 'launch' : stats.plan || 'free' }}</span>
             </div>
 
-            <div class="plan-progress">
+            <p v-if="unlimited" class="plan-free-note">
+              Everything is unlocked while FirmFinderNG is in launch: full contact details, CSV export and every market report.
+            </p>
+
+            <div v-else class="plan-progress">
               <div class="plan-progress-labels">
                 <span>Leads used this month</span>
                 <span class="plan-progress-count">{{ stats.leads_used || 0 }} / {{ stats.leads_limit || 0 }}</span>
@@ -85,7 +89,10 @@
               <p class="plan-progress-note" :class="`note-${usageLevel}`">{{ usageMessage }}</p>
             </div>
 
-            <NuxtLink v-if="stats.plan !== 'enterprise'" to="/dashboard/billing" class="dash-btn dash-btn-primary dash-btn-block">
+            <NuxtLink v-if="freeAccess" to="/dashboard/leads" class="dash-btn dash-btn-primary dash-btn-block">
+              Find leads <Icon name="ph:arrow-right" />
+            </NuxtLink>
+            <NuxtLink v-else-if="stats.plan !== 'enterprise'" to="/dashboard/billing" class="dash-btn dash-btn-primary dash-btn-block">
               Upgrade plan <Icon name="ph:arrow-right" />
             </NuxtLink>
           </section>
@@ -115,7 +122,7 @@
 
 <script setup lang="ts">
 definePageMeta({ middleware: 'auth' })
-const { api } = useAuth()
+const { api, freeAccess } = useAuth()
 const loading = ref(true)
 const loadError = ref(false)
 const stats = ref<any>({})
@@ -129,9 +136,16 @@ const loadStats = async () => {
 }
 onMounted(loadStats)
 
+// leads_limit / leads_remaining are null when the account has no monthly cap
+const unlimited = computed(() => stats.value.leads_limit === null)
+
 const statCards = computed(() => [
-  { label: 'Leads remaining', value: stats.value.leads_remaining?.toLocaleString() || '0', icon: 'ph:check-circle-fill', featured: true },
-  { label: 'Leads used', value: `${stats.value.leads_used || 0} / ${stats.value.leads_limit || 0}`, icon: 'ph:database-fill', featured: false },
+  unlimited.value
+    ? { label: 'Leads available', value: 'Unlimited', icon: 'ph:check-circle-fill', featured: true }
+    : { label: 'Leads remaining', value: stats.value.leads_remaining?.toLocaleString() || '0', icon: 'ph:check-circle-fill', featured: true },
+  unlimited.value
+    ? { label: 'Leads used this month', value: (stats.value.leads_used || 0).toLocaleString(), icon: 'ph:database-fill', featured: false }
+    : { label: 'Leads used', value: `${stats.value.leads_used || 0} / ${stats.value.leads_limit || 0}`, icon: 'ph:database-fill', featured: false },
   { label: 'Total businesses', value: stats.value.total_businesses?.toLocaleString() || '0', icon: 'ph:buildings-fill', featured: false },
   { label: 'Total exports', value: stats.value.total_exports?.toLocaleString?.() || '0', icon: 'ph:export-fill', featured: false },
 ])
@@ -153,16 +167,18 @@ const usageMessage = computed(() => {
   return `${left} leads left this month.`
 })
 
-// Free plan has no export, so point those users to upgrade instead of a dead end
+// Accounts without export get pointed to upgrade instead of a dead end
 const quickActions = computed(() => {
-  const canExport = stats.value.plan && stats.value.plan !== 'free'
+  const canExport = stats.value.has_full_access ?? (stats.value.plan && stats.value.plan !== 'free')
   return [
     { to: '/dashboard/leads', label: 'Search leads', sub: 'Find businesses by industry', icon: 'ph:magnifying-glass-fill' },
     canExport
       ? { to: '/dashboard/leads', label: 'Export CSV', sub: 'Download filtered leads', icon: 'ph:export-fill' }
       : { to: '/dashboard/billing', label: 'Export CSV', sub: 'Upgrade to unlock exports', icon: 'ph:lock-simple-fill' },
     { to: '/dashboard/reports', label: 'Market reports', sub: 'Latest Nigerian insights', icon: 'ph:chart-bar-fill' },
-    { to: '/dashboard/billing', label: 'Plan & payments', sub: 'View plan and payment history', icon: 'ph:receipt-fill' },
+    freeAccess
+      ? { to: '/dashboard/profile', label: 'My profile', sub: 'Update your details', icon: 'ph:user-circle-fill' }
+      : { to: '/dashboard/billing', label: 'Plan & payments', sub: 'View plan and payment history', icon: 'ph:receipt-fill' },
   ]
 })
 </script>
@@ -226,6 +242,7 @@ const quickActions = computed(() => {
 @media (prefers-reduced-motion: reduce) { .stat-card-featured::before { animation: none; } }
 
 /* Plan + actions */
+.plan-free-note { font-size: 0.875rem; line-height: 1.55; color: var(--text-secondary); margin-bottom: 1.25rem; }
 .dash-row { display: grid; grid-template-columns: 320px 1fr; gap: 1.25rem; align-items: start; }
 
 .plan-card { display: flex; flex-direction: column; gap: 1.5rem; }

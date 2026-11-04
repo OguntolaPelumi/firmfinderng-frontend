@@ -82,11 +82,11 @@
       <div class="section-inner">
         <div class="section-header">
           <p class="section-eyebrow">Pricing</p>
-          <h2 class="section-title">Simple, transparent pricing</h2>
-          <p class="section-sub">Start free. Upgrade when you are ready.</p>
+          <h2 class="section-title">{{ freeAccess ? 'Free while we launch' : 'Simple, transparent pricing' }}</h2>
+          <p class="section-sub">{{ freeAccess ? 'Every feature is unlocked for every account. No card, no catch.' : 'Start free. Upgrade when you are ready.' }}</p>
         </div>
-        <div class="pricing-grid">
-          <div v-for="plan in plans" :key="plan.name"
+        <div class="pricing-grid" :class="{ 'pricing-grid-single': freeAccess }">
+          <div v-for="plan in shownPlans" :key="plan.name"
             class="pricing-card"
             :class="plan.featured ? 'pricing-card-featured' : ''">
             <div v-if="plan.featured" class="pricing-popular">Most Popular</div>
@@ -183,12 +183,21 @@ const features = [
   { icon: 'ph:export-fill', title: 'Instant Export', desc: 'Download filtered leads as CSV or Excel with one click. Ready for your CRM immediately.' },
 ]
 
+const { freeAccess } = useAuth()
+
+const launchPlan = {
+  name: 'Free access', price: '₦0', period: '/month', desc: 'Full access while FirmFinderNG is in launch', featured: true, cta: 'Create free account',
+  features: ['Full contact details: phone, email, website', 'CSV export of any search', 'All industries and states', 'All market reports'],
+}
+
 const plans = [
   { name: 'Free', price: '₦0', period: '/month', desc: 'Get started with limited access', featured: false, cta: 'Start Free', features: ['20 lead previews/month', 'Basic search and filter', 'No export', 'Community support'] },
   { name: 'Basic', price: '₦15,000', period: '/month', desc: 'For growing businesses', featured: false, cta: 'Get Basic', features: ['500 full leads/month', 'CSV export', '1 industry filter', 'Email support'] },
   { name: 'Pro', price: '₦35,000', period: '/month', desc: 'For serious lead generation', featured: true, cta: 'Get Pro', features: ['2,000 leads/month', 'Excel + CSV export', 'All industries', 'Competitor tracking', 'Market reports', 'Priority support'] },
   { name: 'Enterprise', price: '₦80,000', period: '/month', desc: 'For agencies and large teams', featured: false, cta: 'Get Enterprise', features: ['Unlimited leads', 'API access', 'Weekly reports', 'All Pro features', 'Dedicated support'] },
 ]
+
+const shownPlans = computed(() => freeAccess ? [launchPlan] : plans)
 </script>
 
 <style scoped>
@@ -278,6 +287,7 @@ const plans = [
 .pricing-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.25rem; max-width: 1000px; margin: 0 auto; }
 .pricing-card { background: var(--cream); border: 1px solid var(--border); border-radius: var(--radius-xl); padding: 1.75rem; position: relative; transition: all 0.2s; display: flex; flex-direction: column; }
 .pricing-card:hover { box-shadow: var(--shadow-md); }
+.pricing-grid.pricing-grid-single { grid-template-columns: minmax(0, 400px); justify-content: center; }
 .pricing-card-featured { border-color: var(--primary); box-shadow: 0 0 0 1px var(--primary), var(--shadow-md); }
 .pricing-popular { position: absolute; top: -13px; left: 50%; transform: translateX(-50%); background: var(--primary); color: white; font-size: 0.7rem; font-weight: 700; padding: 3px 14px; border-radius: 999px; white-space: nowrap; letter-spacing: 0.02em; }
 .pricing-name { font-size: 0.875rem; font-weight: 700; color: var(--gray-500); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.875rem; }

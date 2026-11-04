@@ -85,9 +85,9 @@
               <div class="locked-icon"><Icon name="ph:lock-simple-fill" /></div>
               <div class="locked-text">
                 <p class="locked-title">Full report locked</p>
-                <p class="locked-sub">Available on Pro and Enterprise plans.</p>
+                <p class="locked-sub">{{ freeAccess ? 'Insights for this report are coming soon.' : 'Available on Pro and Enterprise plans.' }}</p>
               </div>
-              <NuxtLink to="/dashboard/billing" class="r-btn r-btn-outline r-btn-sm">Upgrade</NuxtLink>
+              <NuxtLink v-if="!freeAccess" to="/dashboard/billing" class="r-btn r-btn-outline r-btn-sm">Upgrade</NuxtLink>
             </div>
           </article>
         </div>
@@ -101,14 +101,14 @@
 
 <script setup lang="ts">
 definePageMeta({ middleware: 'auth' })
-const { api, user } = useAuth()
+const { api, freeAccess, hasPremiumReports } = useAuth()
 const loading = ref(true)
 const loadError = ref(false)
 const reports = ref<any[]>([])
 const activeIndustry = ref('')
 const expanded = ref<Set<any>>(new Set())
 
-const needsUpgrade = computed(() => user.value?.subscription_plan === 'free' || user.value?.subscription_plan === 'basic')
+const needsUpgrade = computed(() => !freeAccess && !hasPremiumReports.value)
 
 const industries = computed(() => [...new Set(reports.value.map(r => r.industry).filter(Boolean))])
 const filteredReports = computed(() =>

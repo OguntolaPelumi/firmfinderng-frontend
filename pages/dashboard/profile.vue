@@ -54,7 +54,7 @@
             </div>
           </div>
           <div class="hero-actions">
-            <span class="plan-pill">{{ profile.subscription_plan }}</span>
+            <span class="plan-pill">{{ freeAccess ? 'Free access' : profile.subscription_plan }}</span>
             <div class="avatar-btns">
               <label class="p-btn p-btn-light p-btn-sm">
                 <Icon name="ph:camera-bold" /> {{ profile.avatar || avatarFile ? 'Change photo' : 'Upload photo' }}
@@ -195,7 +195,7 @@
 
 <script setup lang="ts">
 definePageMeta({ middleware: 'auth' })
-const { api, fetchUser } = useAuth()
+const { api, fetchUser, freeAccess } = useAuth()
 
 const EDITABLE = ['full_name', 'company_name', 'phone', 'job_title', 'bio', 'industry', 'state', 'city', 'website', 'linkedin', 'email_notifications'] as const
 const MAX_AVATAR = 2 * 1024 * 1024

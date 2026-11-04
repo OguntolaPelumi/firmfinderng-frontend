@@ -109,7 +109,14 @@ const handleLogin = async () => {
   if (!form.email || !form.password) { error.value = 'Please enter your email and password.'; return }
   loading.value = true; error.value = ''
   try { await login(form.email, form.password); router.push('/dashboard') }
-  catch { error.value = 'Invalid email or password. Please try again.' }
+  catch (err: any) {
+    // Correct password but the email hasn't been confirmed yet
+    if (err?.data?.code === 'email_not_verified') {
+      router.push({ path: '/verify-email', query: { email: form.email, reason: 'unverified' } })
+      return
+    }
+    error.value = 'Invalid email or password. Please try again.'
+  }
   finally { loading.value = false }
 }
 </script>

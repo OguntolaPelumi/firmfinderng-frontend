@@ -106,13 +106,16 @@ const form = reactive({ full_name: '', email: '', company_name: '', phone: '', u
 const loading = ref(false)
 const error = ref('')
 const showPassword = ref(false)
-const benefits = ['20 free leads every month', 'No payment details required', 'Instant access to dashboard', 'Upgrade anytime']
+const benefits = ['20 free leads every month', 'No payment details required', 'Confirm your email and start in minutes', 'Upgrade anytime']
 
 const handleRegister = async () => {
   if (!form.full_name || !form.email || !form.username || !form.password) { error.value = 'Please fill in all required fields.'; return }
   if (form.password !== form.password2) { error.value = 'Passwords do not match.'; return }
   loading.value = true; error.value = ''
-  try { await register(form); router.push('/dashboard') }
+  try {
+    await register(form)
+    router.push({ path: '/verify-email', query: { email: form.email } })
+  }
   catch (err: any) {
     const data = err?.data || {}
     error.value = Object.values(data).flat().join(' ') || 'Registration failed. Please try again.'

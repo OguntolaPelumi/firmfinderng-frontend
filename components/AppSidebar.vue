@@ -54,10 +54,11 @@
       <div class="sidebar-plan">
         <div class="sidebar-plan-inner">
           <div class="sidebar-plan-top">
-            <span class="sidebar-plan-label">Current plan</span>
-            <span class="sidebar-plan-pill">{{ user?.subscription_plan || 'free' }}</span>
+            <span class="sidebar-plan-label">{{ freeAccess ? 'Your access' : 'Current plan' }}</span>
+            <span class="sidebar-plan-pill">{{ freeAccess ? 'Free' : user?.subscription_plan || 'free' }}</span>
           </div>
-          <div class="sidebar-plan-bar-wrap">
+          <p v-if="leadsRemaining === null" class="sidebar-plan-usage">Unlimited leads and CSV export</p>
+          <div v-else class="sidebar-plan-bar-wrap">
             <div
               class="sidebar-plan-bar"
               role="progressbar"
@@ -68,9 +69,9 @@
             >
               <div class="sidebar-plan-bar-fill" :style="{ width: usedPct + '%' }" />
             </div>
-            <span class="sidebar-plan-usage">{{ (user?.leads_remaining || 0).toLocaleString() }} leads left</span>
+            <span class="sidebar-plan-usage">{{ leadsRemaining.toLocaleString() }} leads left</span>
           </div>
-          <NuxtLink v-if="user?.subscription_plan === 'free'" to="/dashboard/billing" class="sidebar-upgrade-btn">
+          <NuxtLink v-if="!freeAccess && user?.subscription_plan === 'free'" to="/dashboard/billing" class="sidebar-upgrade-btn">
             Upgrade plan <Icon name="ph:arrow-right" />
           </NuxtLink>
         </div>
@@ -93,7 +94,7 @@
 </template>
 
 <script setup lang="ts">
-const { user, logout } = useAuth()
+const { user, logout, freeAccess, leadsRemaining } = useAuth()
 const route = useRoute()
 
 // Shared state so a layout header button can also open the drawer: useState('sidebar-open')
@@ -103,7 +104,8 @@ const navItems = [
   { to: '/dashboard', icon: 'ph:squares-four-fill', label: 'Overview', exact: true },
   { to: '/dashboard/leads', icon: 'ph:buildings-fill', label: 'B2B Leads', exact: false },
   { to: '/dashboard/reports', icon: 'ph:chart-bar-fill', label: 'Market Reports', exact: false },
-  { to: '/dashboard/billing', icon: 'ph:receipt-fill', label: 'Billing', exact: false },
+  // Billing is hidden during the free launch
+  ...(freeAccess ? [] : [{ to: '/dashboard/billing', icon: 'ph:receipt-fill', label: 'Billing', exact: false }]),
   { to: '/dashboard/profile', icon: 'ph:user-circle-fill', label: 'My Profile', exact: false },
 ]
 
@@ -194,6 +196,7 @@ onBeforeUnmount(() => window.removeEventListener('keydown', onKey))
 .sidebar-plan-bar { background: var(--side-line); border-radius: 999px; height: 8px; overflow: hidden; margin-bottom: 0.5rem; }
 .sidebar-plan-bar-fill { height: 100%; background: var(--side-text); border-radius: 999px; transition: width 0.5s; }
 .sidebar-plan-usage { font-size: 0.78rem; color: var(--side-text); }
+.sidebar-plan-inner > .sidebar-plan-usage { display: block; }
 .sidebar-upgrade-btn { display: flex; align-items: center; justify-content: center; gap: 0.4rem; min-height: 40px; background: var(--side-text); color: var(--side-green); padding: 0.5rem; border-radius: var(--radius); font-size: 0.85rem; font-weight: 600; text-decoration: none; transition: background 0.15s; }
 .sidebar-upgrade-btn:hover { background: var(--cream); }
 .sidebar-upgrade-btn:focus-visible { outline: 2px solid var(--side-text); outline-offset: 2px; }
