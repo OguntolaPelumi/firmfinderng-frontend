@@ -162,6 +162,8 @@ const progressColor = computed(() =>
 )
 const usageMessage = computed(() => {
   const left = (stats.value.leads_remaining ?? 0).toLocaleString()
+  if (stats.value.trial_exhausted) return 'Free trial used up. Subscribe to keep searching and exporting.'
+  if (stats.value.on_free_trial) return `${left} free trial leads left. Each business you unlock counts once.`
   if (usageLevel.value === 'high') return `Almost out: only ${left} leads left this month.`
   if (usageLevel.value === 'mid') return `You've used ${Math.round(usedPct.value)}% of your leads. ${left} left.`
   return `${left} leads left this month.`

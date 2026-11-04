@@ -13,8 +13,13 @@ export const useAuth = () => {
   const paymentsEnabled = !!config.public.paymentsEnabled
   // The backend decides access; fall back to the plan for responses that predate these fields
   const hasFullAccess = computed(() => user.value?.has_full_access ?? (freeAccess || user.value?.subscription_plan !== 'free'))
-  // CSV export is open to every plan, within its monthly lead allowance
+  // CSV export is open to every plan within its allowance, except a used-up free trial
   const canExport = computed(() => user.value?.can_export ?? true)
+  // Search results carry contact details (paid plans); otherwise they are previews
+  const contactsInSearch = computed(() => user.value?.contacts_in_search ?? hasFullAccess.value)
+  // One-time free trial for new accounts: unlock a fixed number of businesses, then locked
+  const onFreeTrial = computed(() => !!user.value?.on_free_trial)
+  const trialExhausted = computed(() => !!user.value?.trial_exhausted)
   const hasPremiumReports = computed(() =>
     user.value?.has_premium_reports ?? (freeAccess || ['pro', 'enterprise'].includes(user.value?.subscription_plan)),
   )
@@ -92,6 +97,9 @@ export const useAuth = () => {
     paymentsEnabled,
     hasFullAccess,
     canExport,
+    contactsInSearch,
+    onFreeTrial,
+    trialExhausted,
     hasPremiumReports,
     leadsRemaining,
     api,

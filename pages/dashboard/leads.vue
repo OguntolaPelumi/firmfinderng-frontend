@@ -11,6 +11,21 @@
         </button>
       </div>
 
+      <!-- Free trial used up: search and export stay locked until the account subscribes -->
+      <div v-if="trialExhausted" class="trial-locked" role="status">
+        <div class="trial-locked-icon"><Icon name="ph:lock-key-fill" /></div>
+        <h2 class="trial-locked-title">Your free trial is used up</h2>
+        <p class="trial-locked-text">
+          You've unlocked all {{ (user?.leads_limit ?? 20).toLocaleString() }} free leads.
+          <template v-if="paymentsEnabled">Subscribe to a paid plan to keep searching and exporting businesses.</template>
+          <template v-else>Paid plans are coming soon. Once they open, you'll be able to subscribe here to keep searching and exporting businesses.</template>
+        </p>
+        <NuxtLink to="/dashboard/billing" class="l-btn l-btn-primary">
+          {{ paymentsEnabled ? 'See plans' : 'View plans' }} <Icon name="ph:arrow-right" />
+        </NuxtLink>
+      </div>
+
+      <template v-else>
       <!-- Filters -->
       <div class="filters-card">
         <div class="filters-row">
@@ -56,8 +71,17 @@
         </div>
       </div>
 
-      <!-- Free tier banner -->
-      <div v-if="isFree" class="upgrade-banner">
+      <!-- Free trial banner -->
+      <div v-if="onFreeTrial" class="upgrade-banner trial-banner">
+        <Icon name="ph:gift-fill" style="flex-shrink:0;font-size:1.1rem" />
+        <span class="upgrade-text">
+          <strong>Free trial: {{ (leadsRemaining ?? 0).toLocaleString() }} of {{ (user?.leads_limit ?? 20).toLocaleString() }} leads left.</strong>
+          Search any city, then open a business to reveal its contacts or tick it for export. Each business counts once.
+        </span>
+      </div>
+
+      <!-- Older free accounts -->
+      <div v-else-if="isFree" class="upgrade-banner">
         <Icon name="ph:lock-simple-fill" style="flex-shrink:0;font-size:1.1rem" />
         <span class="upgrade-text">Free plan shows previews here. Export to CSV to get full contact details for up to {{ (user?.leads_limit ?? 20).toLocaleString() }} leads a month.</span>
         <NuxtLink to="/dashboard/billing" class="upgrade-action">Upgrade to unlock <Icon name="ph:arrow-right" /></NuxtLink>
@@ -149,12 +173,12 @@
                   <td data-label="Location" class="td-location">{{ [biz.state_name, biz.city].filter(Boolean).join(', ') || '—' }}</td>
                   <td data-label="Phone">
                     <span v-if="biz.phone" class="td-contact">{{ biz.phone }}</span>
-                    <span v-else-if="isFree" class="td-locked"><Icon name="ph:lock-simple-fill" /> Upgrade</span>
+                    <span v-else-if="isLocked(biz)" class="td-locked"><Icon name="ph:lock-simple-fill" /> {{ onFreeTrial ? 'Reveal' : 'Upgrade' }}</span>
                     <span v-else class="td-muted">—</span>
                   </td>
                   <td data-label="Email">
                     <span v-if="biz.email" class="td-contact td-email">{{ biz.email }}</span>
-                    <span v-else-if="isFree" class="td-locked"><Icon name="ph:lock-simple-fill" /> Upgrade</span>
+                    <span v-else-if="isLocked(biz)" class="td-locked"><Icon name="ph:lock-simple-fill" /> {{ onFreeTrial ? 'Reveal' : 'Upgrade' }}</span>
                     <span v-else class="td-muted">—</span>
                   </td>
                   <td data-label="Website">
@@ -199,6 +223,8 @@
         </template>
       </div>
 
+      </template>
+
       <!-- Business details panel -->
       <Teleport to="body">
         <Transition name="drawer">
@@ -230,7 +256,17 @@
               </header>
 
               <div class="drawer-body">
-                <div v-if="isFree" class="drawer-locked">
+                <div v-if="isLocked(activeBiz) && onFreeTrial" class="drawer-locked">
+                  <Icon name="ph:lock-open-fill" />
+                  <p>Reveal this business's phone, email, website and address. This uses 1 of your {{ (leadsRemaining ?? 0).toLocaleString() }} remaining free leads; businesses you've already unlocked don't count again.</p>
+                  <button type="button" class="l-btn l-btn-primary l-btn-sm" :disabled="revealing" @click="revealBiz(activeBiz)">
+                    <span v-if="revealing" class="spinner" aria-hidden="true" />
+                    <Icon v-else name="ph:eye-bold" />
+                    {{ revealing ? 'Revealing...' : 'Reveal contact details' }}
+                  </button>
+                </div>
+
+                <div v-else-if="isLocked(activeBiz)" class="drawer-locked">
                   <Icon name="ph:lock-simple-fill" />
                   <p>Contact details show here on paid plans. On the free plan, add this business to your export to get its phone, email and website in the CSV.</p>
                   <NuxtLink to="/dashboard/billing" class="l-btn l-btn-outline l-btn-sm">See plans</NuxtLink>
@@ -316,7 +352,7 @@
 
 <script setup lang="ts">
 definePageMeta({ middleware: 'auth' })
-const { api, user, hasFullAccess, canExport, fetchUser } = useAuth()
+const { api, user, hasFullAccess, canExport, contactsInSearch, onFreeTrial, trialExhausted, leadsRemaining, paymentsEnabled, fetchUser } = useAuth()
 const config = useRuntimeConfig()
 
 const PAGE_SIZE = 20
@@ -330,6 +366,25 @@ const totalPages = computed(() => Math.ceil(count.value / PAGE_SIZE))
 const rangeStart = computed(() => (page.value - 1) * PAGE_SIZE + 1)
 const rangeEnd = computed(() => Math.min((page.value - 1) * PAGE_SIZE + leads.value.length, count.value))
 const isFree = computed(() => !hasFullAccess.value)
+// Search rows are previews unless the plan includes contacts or this business was unlocked
+const isLocked = (biz: any) => !contactsInSearch.value && !biz?._revealed
+
+// Free trial: open a business to unlock its contacts (counts once per business)
+const revealing = ref(false)
+const revealBiz = async (biz: any) => {
+  revealing.value = true
+  try {
+    const full: any = await api(`/businesses/${biz.id}/`)
+    const merged = { ...biz, ...full, _revealed: true }
+    activeBiz.value = merged
+    const i = leads.value.findIndex(b => b.id === biz.id)
+    if (i !== -1) leads.value[i] = merged
+    fetchUser() // update the trial counter
+  } catch (err: any) {
+    notice.value = err?.data?.error || 'Could not reveal this business. Please try again.'
+    if (err?.data?.code === 'trial_exhausted') { closeDetails(); fetchUser() }
+  } finally { revealing.value = false }
+}
 const hasFilters = computed(() => !!(search.value || selectedIndustry.value || selectedState.value || hasEmail.value))
 
 const buildParams = () => {
@@ -354,6 +409,7 @@ const fetchLeads = async () => {
   } catch (err: any) {
     if (id !== reqId) return
     error.value = err?.data?.error || 'Failed to load leads.'
+    if (err?.data?.code === 'trial_exhausted') fetchUser() // switches to the locked screen
   } finally { if (id === reqId) loading.value = false }
 }
 
@@ -454,7 +510,9 @@ const exportLeads = async () => {
     const maxRows = Number(response.headers.get('X-Export-Max-Rows'))
     const requested = Math.min(ids.length || count.value, maxRows || Infinity)
     if (exported < requested) {
-      notice.value = `Exported ${exported.toLocaleString()} of ${requested.toLocaleString()} businesses: that used up your plan's leads for this month. Upgrade to export more.`
+      notice.value = onFreeTrial.value
+        ? `Exported ${exported.toLocaleString()} of ${requested.toLocaleString()} businesses: that used up your free trial.`
+        : `Exported ${exported.toLocaleString()} of ${requested.toLocaleString()} businesses: that used up your plan's leads for this month. Upgrade to export more.`
     } else if (!ids.length && maxRows && exported >= maxRows && count.value > exported) {
       notice.value = `Exported the first ${exported.toLocaleString()} of ${count.value.toLocaleString()} businesses. Add filters to export a different set.`
     }
@@ -526,6 +584,14 @@ onBeforeUnmount(() => {
 .filters-active { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid var(--border); font-size: 0.8rem; color: var(--text-muted); }
 .link-btn { background: none; border: 0; padding: 0.25rem 0; font: inherit; font-size: 0.8rem; font-weight: 600; color: var(--primary); cursor: pointer; }
 .link-btn:hover { text-decoration: underline; }
+
+/* Free trial */
+.trial-banner { background: #e3f2e8; }
+.trial-banner strong { font-weight: 700; }
+.trial-locked { display: flex; flex-direction: column; align-items: center; gap: 0.75rem; max-width: 520px; margin: 2rem auto; padding: 2.5rem 1.5rem; text-align: center; background: var(--cream); border: 1px solid var(--border); border-top: 4px solid var(--primary); border-radius: var(--radius-lg); box-shadow: var(--shadow-sm); }
+.trial-locked-icon { width: 56px; height: 56px; display: flex; align-items: center; justify-content: center; border-radius: 50%; font-size: 1.6rem; color: var(--primary); background: var(--primary-light); }
+.trial-locked-title { font-size: 1.25rem; font-weight: 800; color: var(--gray-900); }
+.trial-locked-text { font-size: 0.9rem; line-height: 1.6; color: var(--text-secondary); margin-bottom: 0.5rem; }
 
 /* Upgrade banner */
 .upgrade-banner { display: flex; align-items: center; gap: 0.75rem; padding: 0.875rem 1rem; margin-bottom: 1rem; background: var(--primary-light); border: 1px solid var(--primary-border); border-radius: var(--radius-md); color: var(--primary-dark); font-size: 0.875rem; }
