@@ -27,6 +27,8 @@
         <slot />
       </div>
 
+      <AppFooter />
+
     </div>
   </div>
 </template>

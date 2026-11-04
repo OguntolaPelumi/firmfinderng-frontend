@@ -20,7 +20,7 @@
           </li>
         </ul>
 
-        <p class="auth-left-foot">by NewHeaven IT Solutions</p>
+        <p class="auth-left-foot">by <a href="https://www.newheavenitsolutions.com" target="_blank" rel="noopener">NewHeaven IT Solutions</a></p>
       </div>
     </aside>
 
@@ -182,6 +182,9 @@ const handleRegister = async () => {
 .auth-check { color: #8ee6b4; font-size: 1.05rem; flex-shrink: 0; }
 
 .auth-left-foot { margin-top: 3rem; font-size: 0.78rem; color: #ffffff; }
+.auth-left-foot a { color: inherit; font-weight: 600; text-decoration: underline; text-underline-offset: 2px; }
+.auth-left-foot a:hover { color: #a7ecc4; }
+.auth-left-foot a:focus-visible { outline: 2px solid #ffffff; outline-offset: 2px; border-radius: 2px; }
 
 /* ---------- Form panel ---------- */
 .auth-right {
