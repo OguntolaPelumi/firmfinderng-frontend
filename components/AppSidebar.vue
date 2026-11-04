@@ -82,10 +82,10 @@
         <div class="sidebar-avatar" aria-hidden="true">{{ initials }}</div>
         <div class="sidebar-user-info">
           <p class="sidebar-user-name">{{ user?.full_name || 'User' }}</p>
-          <p class="sidebar-user-email">{{ user?.email }}</p>
         </div>
-        <button type="button" class="sidebar-logout" aria-label="Sign out" title="Sign out" @click="logout">
-          <Icon name="ph:sign-out-bold" style="font-size:1.1rem" />
+        <button type="button" class="sidebar-logout" @click="logout">
+          <Icon name="ph:sign-out-bold" style="font-size:1rem" />
+          <span>Log out</span>
         </button>
       </div>
 
@@ -206,9 +206,14 @@ onBeforeUnmount(() => window.removeEventListener('keydown', onKey))
 .sidebar-avatar { width: 34px; height: 34px; border-radius: 50%; background: var(--side-text); color: var(--side-green); font-size: 0.75rem; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
 .sidebar-user-info { flex: 1; overflow: hidden; min-width: 0; }
 .sidebar-user-name { font-size: 0.82rem; font-weight: 600; color: var(--side-text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.sidebar-user-email { font-size: 0.72rem; color: var(--side-text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.sidebar-logout { width: 40px; height: 40px; border-radius: var(--radius); background: none; border: none; cursor: pointer; color: var(--side-text); display: flex; align-items: center; justify-content: center; transition: background 0.15s, color 0.15s; flex-shrink: 0; }
-.sidebar-logout:hover { background: var(--side-hover); }
+.sidebar-logout {
+  display: inline-flex; align-items: center; gap: 0.35rem; flex-shrink: 0;
+  height: 36px; padding: 0 0.75rem; border-radius: 999px;
+  font: inherit; font-size: 0.8rem; font-weight: 600; color: var(--side-text);
+  background: var(--side-hover); border: 1px solid var(--side-line); cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+.sidebar-logout:hover { background: var(--side-text); color: var(--side-green); }
 .sidebar-logout:focus-visible { outline: 2px solid var(--side-text); outline-offset: 1px; }
 
 /* Mobile menu button + backdrop (hidden on desktop) */
