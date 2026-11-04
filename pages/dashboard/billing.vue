@@ -145,7 +145,7 @@ const subscribing = ref<string | null>(null)
 const notice = ref<{ type: 'success' | 'error'; text: string } | null>(null)
 
 const plans: Record<string, any> = {
-  free: { name: 'Free', price: '₦0', kobo: 0, features: ['20 lead previews/month', 'Basic filters', 'No export'] },
+  free: { name: 'Free', price: '₦0', kobo: 0, features: ['20 lead previews/month', 'Basic filters', 'CSV export'] },
   basic: { name: 'Basic', price: '₦15,000', kobo: 1500000, features: ['500 leads/month', 'CSV export', '1 industry filter', 'Email support'] },
   pro: { name: 'Pro', price: '₦35,000', kobo: 3500000, features: ['2,000 leads/month', 'Excel + CSV export', 'All industries', 'Competitor tracking', 'Market reports'] },
   enterprise: { name: 'Enterprise', price: '₦80,000', kobo: 8000000, features: ['Unlimited leads', 'API access', 'Weekly reports', 'Dedicated support'] },

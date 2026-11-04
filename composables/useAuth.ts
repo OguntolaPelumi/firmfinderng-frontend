@@ -11,6 +11,8 @@ export const useAuth = () => {
   const freeAccess = !!config.public.freeAccess
   // The backend decides access; fall back to the plan for responses that predate these fields
   const hasFullAccess = computed(() => user.value?.has_full_access ?? (freeAccess || user.value?.subscription_plan !== 'free'))
+  // CSV export is open to every plan, within its monthly lead allowance
+  const canExport = computed(() => user.value?.can_export ?? true)
   const hasPremiumReports = computed(() =>
     user.value?.has_premium_reports ?? (freeAccess || ['pro', 'enterprise'].includes(user.value?.subscription_plan)),
   )
@@ -86,6 +88,7 @@ export const useAuth = () => {
     isAuthenticated,
     freeAccess,
     hasFullAccess,
+    canExport,
     hasPremiumReports,
     leadsRemaining,
     api,

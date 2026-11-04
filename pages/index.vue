@@ -139,9 +139,6 @@
           <NuxtLink to="/register">Register</NuxtLink>
         </div>
       </div>
-      <div class="footer-bottom">
-        <a href="https://www.newheavenitsolutions.com" target="_blank" rel="noopener" class="footer-made">created by newheavenitsolutions</a>
-      </div>
     </footer>
 
   </div>
@@ -192,7 +189,7 @@ const launchPlan = {
 }
 
 const plans = [
-  { name: 'Free', price: '₦0', period: '/month', desc: 'Get started with limited access', featured: false, cta: 'Start Free', features: ['20 lead previews/month', 'Basic search and filter', 'No export', 'Community support'] },
+  { name: 'Free', price: '₦0', period: '/month', desc: 'Get started with limited access', featured: false, cta: 'Start Free', features: ['20 lead previews/month', 'Basic search and filter', 'CSV export', 'Community support'] },
   { name: 'Basic', price: '₦15,000', period: '/month', desc: 'For growing businesses', featured: false, cta: 'Get Basic', features: ['500 full leads/month', 'CSV export', '1 industry filter', 'Email support'] },
   { name: 'Pro', price: '₦35,000', period: '/month', desc: 'For serious lead generation', featured: true, cta: 'Get Pro', features: ['2,000 leads/month', 'Excel + CSV export', 'All industries', 'Competitor tracking', 'Market reports', 'Priority support'] },
   { name: 'Enterprise', price: '₦80,000', period: '/month', desc: 'For agencies and large teams', featured: false, cta: 'Get Enterprise', features: ['Unlimited leads', 'API access', 'Weekly reports', 'All Pro features', 'Dedicated support'] },
@@ -344,11 +341,6 @@ const shownPlans = computed(() => freeAccess ? [launchPlan] : plans)
 .footer { padding: 1.5rem 2rem; border-top: 1px solid var(--border); background: var(--cream); }
 .footer-inner { max-width: 1200px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
 .footer-brand { display: flex; align-items: center; flex-wrap: wrap; gap: 0.5rem; }
-/* Bottom credit line, centred under everything else */
-.footer-bottom { max-width: 1200px; margin: 1.25rem auto 0; padding-top: 1rem; border-top: 1px solid var(--border); text-align: center; }
-.footer-made { font-size: 0.8rem; font-weight: 500; color: var(--text-muted); text-decoration: none; transition: color 0.15s; }
-.footer-made:hover { color: var(--primary); text-decoration: underline; }
-.footer-made:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; border-radius: 2px; }
 .footer-links { display: flex; flex-wrap: wrap; gap: 0.5rem 1.5rem; }
 .footer-links a { font-size: 0.8rem; color: var(--text-muted); text-decoration: none; }
 .footer-links a:hover { color: var(--primary); }

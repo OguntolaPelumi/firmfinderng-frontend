@@ -40,7 +40,7 @@
           </select>
 
           <!-- Accounts without export get sent to upgrade instead of a failing button -->
-          <NuxtLink v-if="isFree" to="/dashboard/billing" class="l-btn l-btn-outline export-btn">
+          <NuxtLink v-if="!canExport" to="/dashboard/billing" class="l-btn l-btn-outline export-btn">
             <Icon name="ph:lock-simple-fill" /> Export CSV
           </NuxtLink>
           <button v-else type="button" class="l-btn l-btn-primary export-btn" :disabled="exporting" @click="exportLeads">
@@ -59,7 +59,7 @@
       <!-- Free tier banner -->
       <div v-if="isFree" class="upgrade-banner">
         <Icon name="ph:lock-simple-fill" style="flex-shrink:0;font-size:1.1rem" />
-        <span class="upgrade-text">Free plan shows previews only. Phone, email and website are hidden.</span>
+        <span class="upgrade-text">Free plan shows previews here. Export to CSV to get full contact details for up to {{ (user?.leads_limit ?? 20).toLocaleString() }} leads a month.</span>
         <NuxtLink to="/dashboard/billing" class="upgrade-action">Upgrade to unlock <Icon name="ph:arrow-right" /></NuxtLink>
       </div>
 
@@ -89,7 +89,7 @@
               <span class="selection-count"><Icon name="ph:check-square-fill" /> {{ selected.size }} selected</span>
               <button type="button" class="link-btn" @click="clearSelection">Clear</button>
             </div>
-            <span v-else-if="!isFree && leads.length" class="table-hint">Tick businesses to export just those, or click one for details</span>
+            <span v-else-if="canExport && leads.length" class="table-hint">Tick businesses to export just those, or click one for details</span>
           </div>
 
           <div v-if="!leads.length" class="empty-state">
@@ -103,7 +103,7 @@
             <table class="leads-table">
               <thead>
                 <tr>
-                  <th v-if="!isFree" class="cell-check">
+                  <th v-if="canExport" class="cell-check">
                     <input
                       type="checkbox"
                       class="row-check"
@@ -130,7 +130,7 @@
                   :class="{ 'lead-row-selected': selected.has(biz.id) }"
                   @click="onRowClick($event, biz)"
                 >
-                  <td v-if="!isFree" class="cell-check" data-label="Select">
+                  <td v-if="canExport" class="cell-check" data-label="Select">
                     <input
                       type="checkbox"
                       class="row-check"
@@ -164,6 +164,23 @@
                   <td data-label="Rating">
                     <span v-if="biz.rating" class="td-rating"><Icon name="ph:star-fill" /> {{ biz.rating }}</span>
                     <span v-else class="td-muted">—</span>
+                  </td>
+                  <!-- Phones only: tap targets that are easier to find than the checkbox and name -->
+                  <td class="cell-actions">
+                    <button type="button" class="l-btn l-btn-outline l-btn-sm card-btn" @click="openDetails(biz)">
+                      <Icon name="ph:info-bold" /> View details
+                    </button>
+                    <button
+                      v-if="canExport"
+                      type="button"
+                      class="l-btn l-btn-sm card-btn"
+                      :class="selected.has(biz.id) ? 'l-btn-primary' : 'l-btn-outline'"
+                      :aria-pressed="selected.has(biz.id)"
+                      @click="toggleSelected(biz)"
+                    >
+                      <Icon :name="selected.has(biz.id) ? 'ph:check-bold' : 'ph:plus-bold'" />
+                      {{ selected.has(biz.id) ? 'Added' : 'Add to export' }}
+                    </button>
                   </td>
                 </tr>
               </tbody>
@@ -215,8 +232,8 @@
               <div class="drawer-body">
                 <div v-if="isFree" class="drawer-locked">
                   <Icon name="ph:lock-simple-fill" />
-                  <p>Contact details are available on paid plans.</p>
-                  <NuxtLink to="/dashboard/billing" class="l-btn l-btn-primary l-btn-sm">Upgrade to unlock</NuxtLink>
+                  <p>Contact details show here on paid plans. On the free plan, add this business to your export to get its phone, email and website in the CSV.</p>
+                  <NuxtLink to="/dashboard/billing" class="l-btn l-btn-outline l-btn-sm">See plans</NuxtLink>
                 </div>
 
                 <template v-else>
@@ -276,7 +293,7 @@
                 </template>
               </div>
 
-              <footer v-if="!isFree" class="drawer-foot">
+              <footer v-if="canExport" class="drawer-foot">
                 <button
                   type="button"
                   class="l-btn drawer-select"
@@ -299,7 +316,7 @@
 
 <script setup lang="ts">
 definePageMeta({ middleware: 'auth' })
-const { api, hasFullAccess, fetchUser } = useAuth()
+const { api, user, hasFullAccess, canExport, fetchUser } = useAuth()
 const config = useRuntimeConfig()
 
 const PAGE_SIZE = 20
@@ -432,10 +449,13 @@ const exportLeads = async () => {
     const a = document.createElement('a'); a.href = url; a.download = `firmfinderng_leads_${Date.now()}.csv`; a.click()
     URL.revokeObjectURL(url)
 
-    // Large searches are trimmed to the per-file cap; tell the user so they can narrow it down
+    // Exports are trimmed to the per-file cap and to the plan's monthly allowance; say which
     const exported = Number(response.headers.get('X-Export-Count'))
     const maxRows = Number(response.headers.get('X-Export-Max-Rows'))
-    if (!ids.length && maxRows && exported >= maxRows && count.value > exported) {
+    const requested = Math.min(ids.length || count.value, maxRows || Infinity)
+    if (exported < requested) {
+      notice.value = `Exported ${exported.toLocaleString()} of ${requested.toLocaleString()} businesses: that used up your plan's leads for this month. Upgrade to export more.`
+    } else if (!ids.length && maxRows && exported >= maxRows && count.value > exported) {
       notice.value = `Exported the first ${exported.toLocaleString()} of ${count.value.toLocaleString()} businesses. Add filters to export a different set.`
     }
     fetchUser() // refresh the leads counter in the header and sidebar
@@ -546,6 +566,7 @@ onBeforeUnmount(() => {
 .td-name-btn:hover .td-name { color: var(--primary-dark); text-decoration: underline; }
 .td-name-btn:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; border-radius: 4px; }
 .td-name-caret { font-size: 0.75rem; color: var(--primary); flex-shrink: 0; }
+.leads-table td.cell-actions { display: none; }
 
 .td-name { font-weight: 600; color: var(--gray-900); }
 .td-badge { display: inline-block; background: var(--primary-light); color: var(--primary-dark); padding: 2px 10px; border-radius: 999px; font-size: 0.72rem; font-weight: 600; white-space: nowrap; }
@@ -644,11 +665,12 @@ onBeforeUnmount(() => {
   .leads-table td.cell-name { justify-content: flex-start; text-align: left; }
   .leads-table td.cell-industry { justify-content: flex-start; padding-bottom: 0.5rem; }
   .td-name { font-size: 1rem; }
-  .leads-table tr.lead-row { position: relative; }
-  .leads-table td.cell-check { position: absolute; top: 1rem; right: 1rem; width: auto; padding: 0; }
-  .leads-table td.cell-check::before { display: none; }
-  .leads-table td.cell-name { padding-right: 2.5rem; }
-  .row-check { width: 22px; height: 22px; }
+  /* The card buttons replace the checkbox here */
+  .leads-table td.cell-check { display: none; }
+  .leads-table td.cell-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; padding-top: 0.75rem; }
+  .leads-table td.cell-actions::before { display: none; }
+  .card-btn { width: 100%; min-height: 44px; }
+  .card-btn:only-child { grid-column: 1 / -1; }
   .drawer-head, .drawer-body, .drawer-foot { padding-left: 1.25rem; padding-right: 1.25rem; }
   .drawer-item { grid-template-columns: 1fr; gap: 0.25rem; }
 

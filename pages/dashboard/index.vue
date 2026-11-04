@@ -169,7 +169,7 @@ const usageMessage = computed(() => {
 
 // Accounts without export get pointed to upgrade instead of a dead end
 const quickActions = computed(() => {
-  const canExport = stats.value.has_full_access ?? (stats.value.plan && stats.value.plan !== 'free')
+  const canExport = stats.value.can_export ?? true
   return [
     { to: '/dashboard/leads', label: 'Search leads', sub: 'Find businesses by industry', icon: 'ph:magnifying-glass-fill' },
     canExport

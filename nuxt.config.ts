@@ -6,9 +6,9 @@ export default defineNuxtConfig({
     public: {
       apiBase: process.env.NUXT_PUBLIC_API_BASE || 'https://pjosh.pythonanywhere.com/api', 
       paystackPublicKey: process.env.NUXT_PUBLIC_PAYSTACK_KEY || '',
-      // Free launch: hides pricing, billing and upgrade prompts. Set NUXT_PUBLIC_FREE_ACCESS=false
-      // (together with FREE_ACCESS_MODE=False on the backend) to bring the paid plans back.
-      freeAccess: process.env.NUXT_PUBLIC_FREE_ACCESS !== 'false',
+      // Free launch: hides pricing, billing and upgrade prompts. Off by default; set
+      // NUXT_PUBLIC_FREE_ACCESS=true together with FREE_ACCESS_MODE=True on the backend.
+      freeAccess: process.env.NUXT_PUBLIC_FREE_ACCESS === 'true',
     }
   },
   app: {
