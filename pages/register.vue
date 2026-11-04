@@ -10,6 +10,9 @@
           </div>
           <span class="auth-brand-name">FirmFinder<span>NG</span></span>
         </NuxtLink>
+        <NuxtLink to="/" class="auth-home-chip">
+          <Icon name="ph:arrow-left-bold" style="font-size:0.8rem" /> Home
+        </NuxtLink>
 
         <h2 class="auth-left-title">Start accessing Nigerian business intelligence today</h2>
 
@@ -93,6 +96,13 @@
           Already have an account? <NuxtLink to="/login">Sign in</NuxtLink>
         </p>
       </div>
+
+      <ul class="auth-perks" aria-label="What you get">
+        <li v-for="item in benefits" :key="item">
+          <Icon name="ph:check-circle-fill" class="auth-perks-icon" />
+          <span>{{ item }}</span>
+        </li>
+      </ul>
     </main>
 
   </div>
@@ -210,6 +220,17 @@ const handleRegister = async () => {
 
 .auth-back { display: inline-flex; align-items: center; gap: 0.35rem; font-size: 0.8rem; color: var(--text-muted); text-decoration: none; margin-bottom: 1.5rem; transition: color 0.15s; }
 .auth-back:hover { color: var(--primary); }
+.auth-perks { display: none; }
+
+/* Home link for phones, shown in the green header */
+.auth-home-chip {
+  display: none; position: absolute; top: 0; right: 0;
+  align-items: center; gap: 0.3rem; height: 34px; padding: 0 0.8rem;
+  font-size: 0.8rem; font-weight: 600; color: #ffffff; text-decoration: none;
+  background: rgba(255, 255, 255, 0.14); border: 1px solid rgba(255, 255, 255, 0.28); border-radius: 999px;
+}
+.auth-home-chip:hover { background: rgba(255, 255, 255, 0.22); }
+.auth-home-chip:focus-visible { outline: 2px solid #ffffff; outline-offset: 2px; }
 
 .auth-title { font-size: 1.625rem; font-weight: 800; color: var(--gray-900); letter-spacing: -0.01em; margin-bottom: 0.25rem; }
 .auth-sub { font-size: 0.9rem; color: var(--text-muted); margin-bottom: 1.5rem; }
@@ -281,16 +302,42 @@ const handleRegister = async () => {
   .auth-left-title { font-size: 1.35rem; }
 }
 
-/* Stack: compact green header on top, form below */
+/* ---------- Phones: green header, form card on the sand area below ---------- */
 @media (max-width: 768px) {
-  .auth-wrap { flex-direction: column; }
-  .auth-left { width: 100%; padding: 1.5rem 1.25rem 3.5rem; align-items: flex-start; }
-  .auth-brand { margin-bottom: 1rem; }
-  .auth-left-title { font-size: 1.15rem; margin-bottom: 0; max-width: 28rem; }
+  /* Fill the whole screen so the sand area gives the card room; the footer sits below the fold */
+  .auth-wrap { flex-direction: column; min-height: 100vh; min-height: 100dvh; }
+  .auth-left { width: 100%; padding: 1.25rem 1.25rem 1.75rem; align-items: flex-start; }
+  .auth-brand { margin-bottom: 1.25rem; }
+  .auth-brand-mark { width: 34px; height: 34px; }
+  .auth-brand-name { font-size: 1.1rem; }
+  .auth-home-chip { display: inline-flex; }
+  .auth-left-title { font-size: 1.05rem; font-weight: 600; line-height: 1.4; margin-bottom: 0; max-width: 22rem; }
   .auth-left-list, .auth-left-foot { display: none; }
 
-  .auth-right { padding: 0 1.25rem 2rem; overflow-y: visible; }
-  .auth-card { margin: -2.25rem auto 0; padding: 2rem 1.5rem; }
+  /* The Home chip in the header replaces the card's back link */
+  .auth-back { display: none; }
+
+  /* The card sits on the sand area below the green header */
+  .auth-right { flex: 1; padding: 2rem 1rem 2.5rem; overflow-y: visible; align-items: center; }
+  .auth-card {
+    margin: auto auto 0;
+    padding: 1.75rem 1.25rem 1.5rem;
+    border-radius: 20px;
+    box-shadow: 0 18px 40px -18px rgba(0, 60, 35, 0.35), 0 2px 6px rgba(0, 0, 0, 0.05);
+  }
+  .auth-title { font-size: 1.5rem; }
+  .auth-sub { margin-bottom: 1.25rem; }
+  .auth-submit { height: 50px; }
+  .auth-switch { margin-top: 1.25rem; padding-top: 1.25rem; border-top: 1px solid var(--border); }
+
+  .auth-right { flex-direction: column; }
+  .auth-perks {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem 1rem;
+    width: 100%; max-width: 500px; margin: 1.5rem auto auto; padding: 0 0.25rem;
+    list-style: none;
+  }
+  .auth-perks li { display: flex; align-items: flex-start; gap: 0.45rem; font-size: 0.8rem; line-height: 1.4; color: var(--text-secondary); }
+  .auth-perks-icon { flex-shrink: 0; margin-top: 2px; color: var(--primary); }
 }
 
 /* Single-column fields on phones */
