@@ -107,6 +107,7 @@ const navItems = [
   // Billing is hidden during the free launch
   ...(freeAccess ? [] : [{ to: '/dashboard/billing', icon: 'ph:receipt-fill', label: 'Billing', exact: false }]),
   { to: '/dashboard/profile', icon: 'ph:user-circle-fill', label: 'My Profile', exact: false },
+  { to: '/dashboard/support', icon: 'ph:lifebuoy-fill', label: 'Support', exact: false },
 ]
 
 // "Overview" is only active on /dashboard itself, not on every /dashboard/* page
