@@ -172,9 +172,9 @@ onMounted(() => {
 })
 
 const stats = [
-  { val: '10,000+', label: 'Verified Businesses' },
-  { val: '36', label: 'Nigerian States' },
-  { val: '20+', label: 'Industries' },
+  { val: '890+', label: 'Verified Businesses' },
+  { val: '10', label: 'Nigerian States' },
+  { val: '25+', label: 'Industries' },
   { val: 'Weekly', label: 'Data Updates' },
 ]
 

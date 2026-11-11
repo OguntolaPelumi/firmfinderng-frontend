@@ -19,7 +19,7 @@
         <ul class="auth-left-list">
           <li v-for="item in benefits" :key="item">
             <Icon name="ph:check-circle-fill" class="auth-check" />
-            <span>{{ item }}</span>
+            <span>{{ }}</span>
           </li>
         </ul>
 
@@ -106,7 +106,7 @@ const form = reactive({ email: '', password: '' })
 const loading = ref(false)
 const error = ref('')
 const showPassword = ref(false)
-const benefits = ['10,000+ verified Nigerian businesses', 'Filter by industry, state, city', 'Export leads to CSV instantly', 'Updated weekly with fresh data']
+const benefits = ['890+ verified Nigerian businesses', 'Filter by industry, state, city', 'Export leads to CSV instantly', 'Updated weekly with fresh data']
 
 const handleLogin = async () => {
   if (!form.email || !form.password) { error.value = 'Please enter your email and password.'; return }
