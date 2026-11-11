@@ -19,7 +19,7 @@
         <ul class="auth-left-list">
           <li v-for="item in benefits" :key="item">
             <Icon name="ph:check-circle-fill" class="auth-check" />
-            <span>{{ }}</span>
+            <span>{{ item }}</span>
           </li>
         </ul>
 
