@@ -1,7 +1,8 @@
 export default defineNuxtConfig({
   devtools: { enabled: true },
-  modules: ['@nuxt/ui', '@pinia/nuxt'],
+  modules: ['@nuxt/ui', '@pinia/nuxt', 'nuxt-gtag'],
   css: ['~/assets/css/main.css'],
+
   runtimeConfig: {
     public: {
       apiBase: process.env.NUXT_PUBLIC_API_BASE || 'https://pjosh.pythonanywhere.com/api', 
@@ -14,6 +15,11 @@ export default defineNuxtConfig({
       paymentsEnabled: process.env.NUXT_PUBLIC_PAYMENTS_ENABLED === 'true',
     }
   },
+  
+  gtag: {
+    id: 'G-83QZL2N4Q1'   // your Measurement ID
+  },
+  
   app: {
     head: {
       title: 'FirmFinderNG — Nigerian Business Intelligence Platform',

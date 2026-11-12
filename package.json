@@ -9,10 +9,11 @@
     "preview": "nuxt preview"
   },
   "dependencies": {
-    "nuxt": "^3.13.0",
     "@nuxt/ui": "^2.18.0",
     "@nuxtjs/google-fonts": "^3.2.0",
-    "pinia": "^2.1.7",
-    "@pinia/nuxt": "^0.5.1"
+    "@pinia/nuxt": "^0.5.1",
+    "nuxt": "^3.13.0",
+    "nuxt-gtag": "^5.0.0",
+    "pinia": "^2.1.7"
   }
 }
